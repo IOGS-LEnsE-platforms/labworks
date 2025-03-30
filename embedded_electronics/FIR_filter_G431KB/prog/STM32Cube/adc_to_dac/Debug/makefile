@@ -64,8 +64,8 @@ all: main-build
 main-build: adc_to_dac.elf secondary-outputs
 
 # Tool invocations
-adc_to_dac.elf adc_to_dac.map: $(OBJS) $(USER_OBJS) D:\tools\git_repo\embedded\Maquettes_LEnsE\Maquettes\Elec_Num_Emb\FIR_filter_G431KB\prog\STM32Cube\adc_to_dac\STM32G431KBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "adc_to_dac.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\tools\git_repo\embedded\Maquettes_LEnsE\Maquettes\Elec_Num_Emb\FIR_filter_G431KB\prog\STM32Cube\adc_to_dac\STM32G431KBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="adc_to_dac.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+adc_to_dac.elf adc_to_dac.map: $(OBJS) $(USER_OBJS) D:\tools\git_repo\LEnsE\platforms\labworks\embedded_electronics\FIR_filter_G431KB\prog\STM32Cube\adc_to_dac\STM32G431KBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "adc_to_dac.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\tools\git_repo\LEnsE\platforms\labworks\embedded_electronics\FIR_filter_G431KB\prog\STM32Cube\adc_to_dac\STM32G431KBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="adc_to_dac.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

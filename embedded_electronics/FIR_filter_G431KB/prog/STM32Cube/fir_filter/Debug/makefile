@@ -64,8 +64,8 @@ all: main-build
 main-build: fir_filter.elf secondary-outputs
 
 # Tool invocations
-fir_filter.elf fir_filter.map: $(OBJS) $(USER_OBJS) D:\tools\git_repo\embedded\Maquettes_LEnsE\Maquettes\Elec_Num_Emb\FIR_filter_G431KB\prog\STM32Cube\fir_filter\STM32G431KBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "fir_filter.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\tools\git_repo\embedded\Maquettes_LEnsE\Maquettes\Elec_Num_Emb\FIR_filter_G431KB\prog\STM32Cube\fir_filter\STM32G431KBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="fir_filter.map" -Wl,--gc-sections -static -L../Middlewares/ST/ARM/DSP/Lib --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+fir_filter.elf fir_filter.map: $(OBJS) $(USER_OBJS) D:\tools\git_repo\LEnsE\platforms\labworks\embedded_electronics\FIR_filter_G431KB\prog\STM32Cube\fir_filter\STM32G431KBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "fir_filter.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\tools\git_repo\LEnsE\platforms\labworks\embedded_electronics\FIR_filter_G431KB\prog\STM32Cube\fir_filter\STM32G431KBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="fir_filter.map" -Wl,--gc-sections -static -L../Middlewares/ST/ARM/DSP/Lib --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

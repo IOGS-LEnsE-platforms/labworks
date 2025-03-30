@@ -214,8 +214,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * File Name          :
-  * Description        :
+  * @file           : main.c
+  * @brief          : Main program body
   ******************************************************************************
   * @attention
   *
