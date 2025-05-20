@@ -45,8 +45,8 @@
 //		PSC_APB = 1
 //		PSC = 16		-> F_IN = 10 MHz
 // 		for F_T7 = 20 kHz -->  ARR = 10 MHz / 20 kHz - 1 = 499
-#define		PSC			16
-#define		ARR			499
+#define		PSC			1
+#define		ARR			1
 
 
 /* USER CODE END PD */
@@ -283,12 +283,14 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc){
 	for(int n=0; n<halfN; n++){ filt_in[n] = (float32_t) adc_buffer[n] - 2048; }
 	arm_fir_f32(&filter1, filt_in_ptr, filt_out_ptr, halfN);
 	for(int n=0; n<halfN; n++){ dac_buffer[n] = (float32_t) filt_out[n] + 2048; }
+	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 	for(int n=halfN; n<N; n++){ filt_in[n] = (float32_t) adc_buffer[n] - 2048; }
 	arm_fir_f32(&filter1, filt_in_ptr + halfN, filt_out_ptr + halfN, halfN);
 	for(int n=halfN; n<N; n++){ dac_buffer[n] = (float32_t) filt_out[n] + 2048; }
+	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 }
 
 
