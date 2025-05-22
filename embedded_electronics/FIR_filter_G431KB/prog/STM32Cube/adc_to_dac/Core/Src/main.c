@@ -37,8 +37,8 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 // Size of the ADC/DAC buffers
-#define		N			500
-#define		halfN		250
+#define		N			512
+#define		halfN		256
 
 /* USER CODE END PD */
 
