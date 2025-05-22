@@ -449,7 +449,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "FIR_filter_G431KB.kicad_pro",
+    "filename": "Regul_Temp_L432KC.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -484,7 +484,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "FIR_filter_gerber/",
+      "plot": "Regul_gerber/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
