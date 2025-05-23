@@ -1,6 +1,7 @@
 # From STM32
 **/Debug/
 **/Release/
+**/BUILD/
 
 # Prerequisites
 *.d
