@@ -14,6 +14,15 @@ void PixelArray::set_all_RGB(short r, short g, short b){
     }
 }
 
+void PixelArray::set_all_RGB_int(int rgb){
+	short r = (rgb >> 8) & 0xFF;
+	short g = (rgb >> 16) & 0xFF;
+	short b = (rgb) & 0xFF;
+    for(int i = 0; i < this->__nb_pixels; i++){
+        this->set_pix_RGB(i, r, g, b);
+    }
+}
+
 void PixelArray::set_pix_RGB(int pix, short r, short g, short b){
     int val = 0;
     if(this->__nb_bits == WS2812_STD)

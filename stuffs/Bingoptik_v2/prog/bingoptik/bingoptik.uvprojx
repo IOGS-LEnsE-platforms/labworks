@@ -454,6 +454,16 @@
               <FileType>5</FileType>
               <FilePath>.\libs\WS2812.h</FilePath>
             </File>
+            <File>
+              <FileName>bingo_strips.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\bingo_strips.h</FilePath>
+            </File>
+            <File>
+              <FileName>bingo_strips.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\bingo_strips.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

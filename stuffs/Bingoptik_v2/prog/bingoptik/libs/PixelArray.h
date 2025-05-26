@@ -26,6 +26,9 @@ class PixelArray{
         void set_all_RGB(short r, short g, short b);
         /**
         */
+        void set_all_RGB_int(int rgb);
+				/**
+        */
         void set_pix_RGB(int pix, short r, short g, short b);
         /**
         */
