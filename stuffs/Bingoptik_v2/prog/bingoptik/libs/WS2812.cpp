@@ -26,7 +26,7 @@ void WS2812::send_led_one(){
 void WS2812::send_led_zero(){
     int k;
     this->__ws_led = 1;  
-    for(k = 0; k < 6; k++)  // Attention, pb avec this->t0h !!
+    for(k = 0; k < this->t0h; k++)  // Attention, pb avec this->t0h !!
         __asm__("nop");
     this->__ws_led = 0;
     for(k = 0; k < this->t0l; k++)
