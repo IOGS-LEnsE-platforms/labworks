@@ -148,6 +148,16 @@ void test2(void){
 	strip_mirror.send_leds(leds_mirror.get_array());
 }
 
+void test3(int cnt){
+	int val = cnt % STRIP_SIZE_MIRROR;
+	printf("%d \r\n", val);
+	for(int k = val; k < val+3; k++){
+		leds_mirror.set_pix_RGB(k, 0, 0, 0);
+		leds_mirror.set_pix_RGB(k+3, 128, 0, 128);
+	}	
+	strip_mirror.send_leds(leds_mirror.get_array());
+}
+
 int main()
 {
 	printf("BingOptik - v %.1lf\r\n", 2.1);
@@ -188,7 +198,8 @@ int main()
 	{
 		if(mvt_detected){ 
 			//test1();
-			test2();
+			//test2();
+			test3(mvt_cnt);
 			mvt_detected = false;
 		}
 		else{
