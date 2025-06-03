@@ -3,6 +3,8 @@
 	<item key="hasShownOverlayPopupBefore" value="true"/>
 	<item key="replaceBarOpen" value="false"/>
 	<list key="searchhistory">
+		<item value="color"/>
+		<item value="SDPath"/>
 		<item value="DAC"/>
 		<item value="toggle"/>
 	</list>

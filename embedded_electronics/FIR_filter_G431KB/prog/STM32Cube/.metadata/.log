@@ -204,3 +204,22 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64 D:\tools\git_repo\LEns
 
 !ENTRY org.eclipse.cdt.core 1 0 2025-05-22 21:59:34.701
 !MESSAGE Indexed 'Regul_Temp' (31 sources, 126 headers) in 2.3 sec: 12,944 declarations; 72,704 references; 3 unresolved inclusions; 46 syntax errors; 171 unresolved names (0.2%)
+!SESSION 2025-06-03 21:57:01.146 -----------------------------------------------
+eclipse.buildId=Version 1.18.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  D:\Projets\STM32\LCD_Paint\STM32CubeIDE\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 D:\Projets\STM32\LCD_Paint\STM32CubeIDE\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-06-03 21:57:08.733
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-06-03 21:57:08.743
+!MESSAGE Log4j2 initialized with config file D:\tools\git_repo\LEnsE\platforms\labworks\embedded_electronics\FIR_filter_G431KB\prog\STM32Cube\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-06-03 21:57:21.778
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-06-03 21:57:26.985
+!MESSAGE Indexed 'LCD_Paint' (40 sources, 124 headers) in 4.46 sec: 11,212 declarations; 71,936 references; 12 unresolved inclusions; 125 syntax errors; 2,664 unresolved names (3.1%)
