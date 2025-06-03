@@ -8,13 +8,13 @@
 #include "ssd1306_constants.h"
 #define     K_GAIN  3
 
-#define WAIT_TIME_MS 500 
+#define WAIT_TIME_MS 5 
 DigitalOut led1(LED1);
 
 AnalogIn    t_consigne(PA_1);
 AnalogIn    t_mesure(PA_0);
 
-DigitalIn   mode_in(PA_11);
+InterruptIn   mode_in(PA_11);
 
 AnalogOut   comp_erreur(PA_4);
 AnalogOut   mesure_out(PA_5);
@@ -28,17 +28,30 @@ DigitalOut  cnt_tik(PA_2);
 
 I2C         my_i2c(PB_7, PB_6);
 SSD1306     my_lcd(&my_i2c, MAX_X, MAX_Y);
+bool 		lcd_update = true;
 
 float   t_consigne_f = 0.0;
 float   t_mesure_f = 0.0;
 float   t_erreur_f = 0.0;
 
 
+void mode_detect(void){
+	if(mode_in == 1){
+		printf("Mode REGUL\r\n");
+		lcd_update = true;
+	}
+	else{
+		printf("Mode SUIVEUR\r\n");
+		lcd_update = true;
+	}
+}
+
 void tik_ISR(void){
     if(mode_in == 1){
         cnt_tik = !cnt_tik;
         t_consigne_f = t_consigne.read() - 0.5;
         t_mesure_f = t_mesure.read() - 0.5;
+				mesure_out.write(t_mesure_f + 0.5);
         t_erreur_f = t_consigne_f - t_mesure_f;
 
         if(t_erreur_f >= 0){    
@@ -55,24 +68,26 @@ void tik_ISR(void){
         }
     }
     else{
-        t_consigne_f = t_consigne.read();
-        comp_erreur.write(t_consigne_f); 
-        moteur_1.write(t_consigne_f);  
-        moteur_2.write(t_consigne_f);
+			t_consigne_f = t_consigne.read();
+			comp_erreur.write(t_consigne_f);
+			t_mesure_f = t_mesure.read();			
+			mesure_out.write(t_mesure_f);
+			moteur_1.write(t_consigne_f);  
+			moteur_2.write(t_consigne_f);
     }
     
 }
 
 int main()
 {
-    printf("Test  7 - signe erreur + PWM + OLED  %.1lf\r\n", 3.1);
+    printf("Test  7 - signe erreur + PWM + OLED  %.1lf\r\n", 3.2);
 
     moteur_1.period_ms(10);
     moteur_2.period_ms(10);
     moteur_1.write(0);
     moteur_2.write(0);
     my_lcd.init();
-	my_lcd.clear_screen();
+		my_lcd.clear_screen();
     thread_sleep_for(200);
 
     tik.attach(&tik_ISR, 100us);
@@ -86,8 +101,25 @@ int main()
     my_lcd.draw_line(30, 50, 60, 40, SSD1306_WHITE);
     my_lcd.display();
 
+		mode_in.rise(&mode_detect);
+		mode_in.fall(&mode_detect);
+
     while (true)
     {
+			if(lcd_update){
+				my_lcd.clear_screen();
+				if(mode_in == 1){
+					my_lcd.set_position(50, 20);
+					my_lcd.draw_string("Mode REGUL", SSD1306_WHITE, NORMAL);
+					my_lcd.display();
+				}
+				else{
+					my_lcd.set_position(50, 20);
+					my_lcd.draw_string("Mode SUIVEUR", SSD1306_WHITE, NORMAL);
+					my_lcd.display();
+				}
+				lcd_update = false;
+			}
         //cnt_tik = !cnt_tik;
         thread_sleep_for(WAIT_TIME_MS);
     }
