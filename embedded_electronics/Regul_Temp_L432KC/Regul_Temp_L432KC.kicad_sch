@@ -2831,12 +2831,12 @@
 		(uuid "32c47829-72bd-465d-bc5a-6e644ef7fcec")
 	)
 	(no_connect
-		(at 176.53 63.5)
-		(uuid "52e8ef77-bf1b-481b-83ec-145fe3d2a99f")
+		(at 146.05 63.5)
+		(uuid "333bd275-2f9d-4a9a-94a6-15bab40e1c12")
 	)
 	(no_connect
-		(at 146.05 66.04)
-		(uuid "9e728c39-1ed9-4422-bf96-f112b267099b")
+		(at 176.53 63.5)
+		(uuid "52e8ef77-bf1b-481b-83ec-145fe3d2a99f")
 	)
 	(no_connect
 		(at 88.9 43.18)
@@ -2871,16 +2871,6 @@
 			(type default)
 		)
 		(uuid "03f4fafb-740b-4c95-bca6-e9cdfd703061")
-	)
-	(wire
-		(pts
-			(xy 143.51 63.5) (xy 146.05 63.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "044695d4-cda5-4548-8b26-1e43b94c58e2")
 	)
 	(wire
 		(pts
@@ -3968,7 +3958,7 @@
 	)
 	(global_label "TIK"
 		(shape input)
-		(at 143.51 63.5 180)
+		(at 143.51 66.04 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3978,7 +3968,7 @@
 		)
 		(uuid "0c2cddd4-8a27-424c-91be-b56442cf792a")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 137.6824 63.5 0)
+			(at 137.6824 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)

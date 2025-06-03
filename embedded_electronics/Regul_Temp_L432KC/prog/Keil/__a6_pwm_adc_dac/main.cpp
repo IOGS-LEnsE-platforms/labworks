@@ -7,6 +7,7 @@
 #include "ssd1306.h"
 #include "ssd1306_constants.h"
 #define     K_GAIN  3
+#define			LCD_REFRESH 	1000
 
 #define WAIT_TIME_MS 5 
 DigitalOut led1(LED1);
@@ -24,18 +25,22 @@ PwmOut      moteur_1(PB_1);
 PwmOut      moteur_2(PB_0);  
 
 Ticker tik;
-DigitalOut  cnt_tik(PA_2);
 
 I2C         my_i2c(PB_7, PB_6);
 SSD1306     my_lcd(&my_i2c, MAX_X, MAX_Y);
 bool 		lcd_update = true;
+char		lcd_disp[32];
+int 		lcd_refresh_cnt = 0;
 
 float   t_consigne_f = 0.0;
+float   t_consigne_f_old = 0.0;
+float   t_consigne_f_new = 0.0;
 float   t_mesure_f = 0.0;
 float   t_erreur_f = 0.0;
 
 
 void mode_detect(void){
+	
 	if(mode_in == 1){
 		printf("Mode REGUL\r\n");
 		lcd_update = true;
@@ -46,81 +51,102 @@ void mode_detect(void){
 	}
 }
 
-void tik_ISR(void){
-    if(mode_in == 1){
-        cnt_tik = !cnt_tik;
-        t_consigne_f = t_consigne.read() - 0.5;
-        t_mesure_f = t_mesure.read() - 0.5;
-				mesure_out.write(t_mesure_f + 0.5);
-        t_erreur_f = t_consigne_f - t_mesure_f;
 
-        if(t_erreur_f >= 0){    
-            comp_erreur.write(t_erreur_f); 
-            led_signe = 0; 
-            moteur_1.write(K_GAIN*t_erreur_f);  
-            moteur_2.write(0); 
-        }
-        else{    
-            comp_erreur.write(-t_erreur_f); 
-            led_signe = 1; 
-            moteur_1.write(0);  
-            moteur_2.write(K_GAIN*t_erreur_f);   
-        }
-    }
-    else{
-			t_consigne_f = t_consigne.read();
-			comp_erreur.write(t_consigne_f);
-			t_mesure_f = t_mesure.read();			
-			mesure_out.write(t_mesure_f);
-			moteur_1.write(t_consigne_f);  
-			moteur_2.write(t_consigne_f);
-    }
-    
+
+void tik_ISR(void){
+	if(mode_in == 1){
+		t_consigne_f = t_consigne.read() - 0.5;
+		t_mesure_f = t_mesure.read() - 0.5;
+		mesure_out.write(t_mesure_f + 0.5);
+		t_erreur_f = t_consigne_f - t_mesure_f;
+
+		/* Update Analog outputs and PWM outputs */
+		if(t_erreur_f >= 0){    
+			comp_erreur.write(t_erreur_f); 
+			led_signe = 0; 
+			moteur_1.write(K_GAIN*t_erreur_f);  
+			moteur_2.write(0); 
+		}
+		else{    
+			comp_erreur.write(-t_erreur_f); 
+			led_signe = 1; 
+			moteur_1.write(0);  
+			moteur_2.write(K_GAIN*t_erreur_f);   
+		}
+	}
+	else{
+		// Following mode
+		t_consigne_f = t_consigne.read();
+		comp_erreur.write(t_consigne_f);
+		t_mesure_f = t_mesure.read();			
+		mesure_out.write(t_mesure_f);
+		moteur_1.write(t_consigne_f);  
+		moteur_2.write(t_consigne_f);
+	}
+	lcd_refresh_cnt++;
+}
+
+void lcd_refresh_consigne(void){
+	sprintf(lcd_disp, "#######");
+	my_lcd.set_position(20, 45);	
+	my_lcd.draw_string(lcd_disp, SSD1306_BLACK, LARGE);
+	t_consigne_f_new = t_consigne_f;
+	sprintf(lcd_disp, "%0.2lf", t_consigne_f_new);
+	my_lcd.set_position(20, 45);	
+	my_lcd.draw_string(lcd_disp, SSD1306_WHITE, LARGE);
+	t_consigne_f_old = t_consigne_f_new;
+	my_lcd.display();	
 }
 
 int main()
 {
-    printf("Test  7 - signe erreur + PWM + OLED  %.1lf\r\n", 3.2);
+    printf("Test REGUL - signe erreur + PWM + OLED  %.1lf\r\n", 1.4);
 
     moteur_1.period_ms(10);
     moteur_2.period_ms(10);
-    moteur_1.write(0);
-    moteur_2.write(0);
+    moteur_1.write(0.3);
+    moteur_2.write(0.5);
+	
     my_lcd.init();
 		my_lcd.clear_screen();
     thread_sleep_for(200);
-
+	
     tik.attach(&tik_ISR, 100us);
     led1 = 1;
-
-    my_lcd.draw_pixel(5, 10, SSD1306_WHITE);
-    my_lcd.fill_rect(10, 20, 20, 30, SSD1306_WHITE);
-    my_lcd.set_position(50, 20);
-    my_lcd.draw_string("Test LCD", SSD1306_WHITE, NORMAL);
-    
-    my_lcd.draw_line(30, 50, 60, 40, SSD1306_WHITE);
-    my_lcd.display();
-
+	
 		mode_in.rise(&mode_detect);
 		mode_in.fall(&mode_detect);
-
+	
     while (true)
     {
+			if(lcd_refresh_cnt >= LCD_REFRESH){
+				lcd_refresh_consigne();
+				t_consigne_f_old = t_consigne_f;
+				lcd_refresh_cnt = 0;
+			}
 			if(lcd_update){
 				my_lcd.clear_screen();
+				my_lcd.set_position(20, 32);	
+				sprintf(lcd_disp, "Consigne");				
+				my_lcd.draw_string(lcd_disp, SSD1306_WHITE, NORMAL);
+				my_lcd.set_position(20, 45);	
+				sprintf(lcd_disp, "%0.2lf", t_consigne_f);
+				my_lcd.draw_string(lcd_disp, SSD1306_WHITE, LARGE);
 				if(mode_in == 1){
-					my_lcd.set_position(50, 20);
-					my_lcd.draw_string("Mode REGUL", SSD1306_WHITE, NORMAL);
-					my_lcd.display();
+					my_lcd.set_position(10, 0);					
+					my_lcd.draw_string("Mode", SSD1306_WHITE, NORMAL);
+					my_lcd.set_position(10, 10);	
+					my_lcd.draw_string("REGUL", SSD1306_WHITE, LARGE);
 				}
 				else{
-					my_lcd.set_position(50, 20);
-					my_lcd.draw_string("Mode SUIVEUR", SSD1306_WHITE, NORMAL);
-					my_lcd.display();
+					my_lcd.set_position(10, 0);					
+					my_lcd.draw_string("Mode", SSD1306_WHITE, NORMAL);
+					my_lcd.set_position(10, 10);	
+					my_lcd.draw_string("SUIVEUR", SSD1306_WHITE, LARGE);
 				}
+				my_lcd.display();
 				lcd_update = false;
 			}
-        //cnt_tik = !cnt_tik;
-        thread_sleep_for(WAIT_TIME_MS);
+      thread_sleep_for(WAIT_TIME_MS);
     }
 }

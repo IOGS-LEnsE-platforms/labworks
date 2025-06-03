@@ -198,8 +198,8 @@ int main()
 	{
 		if(mvt_detected){ 
 			//test1();
-			//test2();
-			test3(mvt_cnt);
+			test2();
+			//test3(mvt_cnt);
 			mvt_detected = false;
 		}
 		else{
