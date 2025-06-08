@@ -17,8 +17,7 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "color.h"
-#include "save.h"
+#include "images.h"
 
 __IO const unsigned char color2[4]=
 {
@@ -81,15 +80,11 @@ static uint32_t Radius = 10;
 TS_StateTypeDef  TS_State = {0};
 
 /* Private function prototypes -----------------------------------------------*/
-static void Draw_Menu(void);
-static void GetPosition(void);
+static void Draw_Image(uint8_t *pbmp, uint32_t color);
 static void SystemClock_Config(void);
 static void Error_Handler(void);
-static void Save_Picture(void);
 static void LTDC_Operation(uint32_t Enable_LTDC);
-static void Prepare_Picture(void);
 static void Update_Color(void);
-static void Update_Size(uint8_t size);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -167,7 +162,7 @@ int main(void)
 
 
   /*##-5- Draw the menu ######################################################*/
-  Draw_Menu();
+  Draw_Image(&im_1_1, LCD_COLOR_WHITE);
 
   /* Infinite loop */
   while (1)
@@ -180,233 +175,40 @@ int main(void)
 }
 
 /**
-  * @brief  Draws the menu.
-  * @param  None
+  * @brief  Draws the images.
+  * @param  pbmp: Pointer to Bmp picture address in the internal Flash
+  * @param  color: Color in ARGB8888 format
   * @retval None
   */
-static void Draw_Menu(void)
+static void Draw_Image(uint8_t *pbmp, uint32_t color)
 {
-  /* Clear the LCD */
+  /* Display a binary image on the LCD (Zoom x4) */
   BSP_LCD_Clear(LCD_COLOR_BLACK);
 
-  BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-  /* Draw working window */
-  BSP_LCD_DrawRect(91, 0, (BSP_LCD_GetXSize()-91), (BSP_LCD_GetYSize()-90));
-
-  BSP_LCD_SetTextColor(LCD_COLOR_DARKRED);
-  BSP_LCD_SetFont(&Font20);
-  BSP_LCD_DisplayStringAt(430, (BSP_LCD_GetYSize() - 75), (uint8_t *)"Test", LEFT_MODE);
-  BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
-  BSP_LCD_DrawBitmap(0, 0, &test);	 // Must have a size that is a multiple of 8 (256 * 256 for example) then convert with HxD to c-file
-}
-
-/**
-  * @brief  Saves the picture in microSD.
-  * @param  None
-  * @retval None
-  */
-static void Save_Picture(void)
-{
-  FRESULT res1 = FR_OK;
-  FRESULT res2 = FR_OK;
-  FRESULT res3 = FR_OK;      /* FatFs function common result code */
-  uint32_t byteswritten = 0;     /* File write count */
-  uint32_t bmpHeaderByteCnt = 0;
-  uint32_t bmpFileInfoHeaderByteCnt = 0;
-  uint32_t bmpFilePixelBytesCnt = 0;
-  static uint32_t counter = 0;
-  uint8_t str[30];
-  uint16_t tmp_size;
-
-  /* Check if the SD card is plugged in the slot */
-  if(BSP_SD_IsDetected() != SD_PRESENT)
-  {
-    BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize() - 20, (uint8_t*)"No SD card detected !!", RIGHT_MODE);
-    Error_Handler();
-  }
-  else
-  {
-    BSP_LCD_SetFont(&Font16);
-    BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize() - 20, (uint8_t*)"Saving BMP to SD card", RIGHT_MODE);
-
-    /* Format the string */
-    sprintf((char *)str, "image_%lu.bmp", counter);
-
-    /* -- Prepare Bitmap file (BMP) header */
-
-    bmpFileHeader.bfType = 0x4D42; /* BMP file type */
-
-    /* Offset in bytes from start of file to first pixel data = size in bytes of complete BMP header          */
-    /* careful the structure is padded on multiple of 32 bits by the compiler : the Padding should be removed */
-    bmpFileHeader.bOffBits = sizeof(BitMapFileHeader_Typedef) +
-                         sizeof(BitMapFileInfoHeader_Typedef) - sizeof(uint32_t) - sizeof(uint16_t);
-
-    /* BMP complete file size is size of pad in RGB888 : 24bpp = 3 bytes per pixel + complete header size */
-    bmpFileHeader.bfSize = ((BSP_LCD_GetXSize() - 105) * (BSP_LCD_GetYSize() - 105 + 1) * RGB888_BYTE_PER_PIXEL);
-    bmpFileHeader.bfSize += bmpFileHeader.bOffBits;
-
-    bmpFileHeader.bfReserved1 = 0x0000;
-    bmpFileHeader.bfReserved2 = 0x0000;
-
-    bmpFileInfoHeader.biSize = 40; /* 40 bytes in bitmap info header */
-    bmpFileInfoHeader.biWidth = (BSP_LCD_GetXSize() - 105);
-    bmpFileInfoHeader.biHeight = (BSP_LCD_GetYSize() - 105);
-    bmpFileInfoHeader.biPlanes = 1; /* one single plane */
-    bmpFileInfoHeader.biBitCount = 24; /* RGB888 : 24 bits per pixel */
-    bmpFileInfoHeader.biCompression = 0; /* no compression */
-
-    /* This is number of pixel bytes in file : sizeX * sizeY * RGB888_BYTE_PER_PIXEL */
-    bmpFileInfoHeader.biSizeImage = ((BSP_LCD_GetXSize() - 105) * (BSP_LCD_GetYSize() - 105 + 1) * RGB888_BYTE_PER_PIXEL);
-
-    bmpFileInfoHeader.biXPelsPerMeter = 0; /* not used */
-    bmpFileInfoHeader.biYPelsPerMeter = 0; /* not used */
-    bmpFileInfoHeader.biClrUsed = 0; /* not used */
-    bmpFileInfoHeader.biClrImportant = 0; /* not used */
-
-    /* -- End Prepare Bitmap file (BMP) header */
-
-    /*##-1- Prepare the image to be saved ####################################*/
-    Prepare_Picture();
-
-    /* Disable the LTDC to avoid charging the bandwidth for nothing while the BMP file is */
-    /* written to SD card */
-    LTDC_Operation(0);
-
-    /*##-2- Create and Open a new bmp file object with write access ##########*/
-    if(f_open(&MyFile, (const char*)str, FA_CREATE_ALWAYS | FA_WRITE) != FR_OK)
-    {
-      /* 'image.bmp' file Open for write Error */
-      BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize() - 20, (uint8_t*)"     BMP File Creation Error !!", RIGHT_MODE);
-      Error_Handler();
-    }
-    else
-    {
-      /*##-3- Write data to the BMP file #####################################*/
-      /* Write the BMP header step 1 : first write BMP header : all but padding is written to file */
-        res1 = f_write(&MyFile, (uint16_t *)&(bmpFileHeader.bfType),
-                       sizeof(uint16_t),
-                       (void *)&bmpHeaderByteCnt);
-        byteswritten += bmpHeaderByteCnt;
-
-        /* LSB of size in bytes of BMP file */
-        tmp_size = (uint16_t)(bmpFileHeader.bfSize & 0x0000FFFF);
-        res1 = f_write(&MyFile, (uint16_t *)&(tmp_size),
-                       sizeof(uint16_t),
-                       (void *)&bmpHeaderByteCnt);
-        byteswritten += bmpHeaderByteCnt;
-
-        /* MSB of size in bytes of BMP file */
-        tmp_size = (uint16_t)((bmpFileHeader.bfSize & 0xFFFF0000) >> 16);
-        res1 = f_write(&MyFile, (uint16_t *)&(tmp_size),
-                       sizeof(uint16_t),
-                       (void *)&bmpHeaderByteCnt);
-        byteswritten += bmpHeaderByteCnt;
-
-        res1 = f_write(&MyFile, (uint16_t *)&(bmpFileHeader.bfReserved1),
-                       sizeof(uint16_t),
-                       (void *)&bmpHeaderByteCnt);
-        byteswritten += bmpHeaderByteCnt;
-
-        res1 = f_write(&MyFile, (uint16_t *)&(bmpFileHeader.bfReserved2),
-                       sizeof(uint16_t),
-                       (void *)&bmpHeaderByteCnt);
-        byteswritten += bmpHeaderByteCnt;
-
-        res1 = f_write(&MyFile, (uint32_t *)&(bmpFileHeader.bOffBits),
-                       sizeof(uint32_t),
-                       (void *)&bmpHeaderByteCnt);
-        byteswritten += bmpHeaderByteCnt;
-
-      if(res1 != FR_OK)
-      {
-      /* Reactivate LTDC */
-        LTDC_Operation(1);
-        f_close(&MyFile);
-        BSP_LCD_ClearStringLine(BSP_LCD_GetYSize() - 20);
-        BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize() - 20, (uint8_t*)"     BMP File Header Saving Error !!", RIGHT_MODE);
-        Error_Handler();
-      }
-
-      byteswritten += bmpHeaderByteCnt;
-
-      if(res1 == FR_OK)
-      {
-        /* Write the BMP header step 2 : second write BMP file info header */
-        res2 = f_write(&MyFile, (BitMapFileInfoHeader_Typedef *)&bmpFileInfoHeader,
-                       sizeof(BitMapFileInfoHeader_Typedef),
-                       (void *)&bmpFileInfoHeaderByteCnt);
-
-
-          if(res2 != FR_OK)
-          {
-            /* Reactivate LTDC */
-            LTDC_Operation(1);
-            f_close(&MyFile);
-            BSP_LCD_ClearStringLine(BSP_LCD_GetYSize() - 20);
-            BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize() - 20, (uint8_t*)"     BMP File Header Info Saving Error !!", RIGHT_MODE);
-            Error_Handler();
-          }
-      }
-
-      byteswritten += bmpFileInfoHeaderByteCnt;
-
-      if((res1 == FR_OK) && (res2 == FR_OK))
-      {
-        /* Write pixel data in the the BMP file */
-        res3 = f_write(&MyFile, (uint8_t *)p_bmp_converted_pixel_data,
-                       bmpFileInfoHeader.biSizeImage,
-                       (void *)&bmpFilePixelBytesCnt);
-
-          /* Reactivate LTDC */
-          LTDC_Operation(1);
-
-        if(res3 != FR_OK)
-        {
-          if(res3 == FR_DISK_ERR)
-          {
-              f_close(&MyFile);
-              BSP_LCD_ClearStringLine(BSP_LCD_GetYSize() - 20);
-              BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize() - 20, (uint8_t*)"     File Saving Error DISKERR !!", RIGHT_MODE);
-          }
-
-          Error_Handler();
-        }
-
-      }
-
-      byteswritten += bmpFilePixelBytesCnt;
-
-      if((res1 != FR_OK) || (res2 != FR_OK) || (res3 != FR_OK) || (byteswritten == 0))
-      {
-        /* 'image.bmp' file Write or EOF Error */
-        BSP_LCD_ClearStringLine(BSP_LCD_GetYSize() - 20);
-        BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize() - 20, (uint8_t*)"     BMP File Saving Error !!", RIGHT_MODE);
-        Error_Handler();
-      }
-      else
-      {
-        /*##-4- Close the open BMP file ######################################*/
-        f_close(&MyFile);
-
-        /* Success of the demo: no error occurrence */
-        BSP_LED_On(LED1);
-
-        BSP_LCD_ClearStringLine(BSP_LCD_GetYSize() - 20);
-        BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize() - 20, (uint8_t*)"             BMP File Saved.", RIGHT_MODE);
-
-        /* Wait for 2s */
-        HAL_Delay(2000);
-
-        BSP_LCD_ClearStringLine(BSP_LCD_GetYSize() - 20);
-
-        /* Select Layer 1 */
-        BSP_LED_Off(LED1);
-        counter++;
-      }
-    }
+  for(int i = 0; i < IMAGE_HEIGHT; i++){
+	 for(int j = 0; j < IMAGE_WIDTH; j++){
+		 int pixel_nb = j%8;
+		 int pixel_block_nb = j/8;
+		 int pixel_value = pbmp[pixel_block_nb + i * IMAGE_WIDTH_B] >> pixel_nb;
+		 if((pixel_value && 0x01) == 0x01){
+			 for(int k = 0; k < 4; k++){
+				   BSP_LCD_DrawPixel(4*i+0, 4*(pixel_block_nb * 8 + pixel_nb)+k, color);
+				   BSP_LCD_DrawPixel(4*i+1, 4*(pixel_block_nb * 8 + pixel_nb)+k, color);
+				   BSP_LCD_DrawPixel(4*i+2, 4*(pixel_block_nb * 8 + pixel_nb)+k, color);
+				   BSP_LCD_DrawPixel(4*i+3, 4*(pixel_block_nb * 8 + pixel_nb)+k, color);
+			 }
+		 }
+		 else
+			 for(int k = 0; k < 4; k++){
+				   BSP_LCD_DrawPixel(4*i+0, 4*(pixel_block_nb * 8 + pixel_nb)+k, LCD_COLOR_BLACK);
+				   BSP_LCD_DrawPixel(4*i+1, 4*(pixel_block_nb * 8 + pixel_nb)+k, LCD_COLOR_BLACK);
+				   BSP_LCD_DrawPixel(4*i+2, 4*(pixel_block_nb * 8 + pixel_nb)+k, LCD_COLOR_BLACK);
+				   BSP_LCD_DrawPixel(4*i+3, 4*(pixel_block_nb * 8 + pixel_nb)+k, LCD_COLOR_BLACK);
+			 }
+	 }
   }
 }
+
 
 /**
   * @brief  Disable/Enable LTDC activity as in DSI Video mode the LTDC is all the time
@@ -433,69 +235,6 @@ static void LTDC_Operation(uint32_t Enable_LTDC)
  DSI->WCR |= DSI_WCR_DSIEN;
 }
 
-/**
-  * @brief  Prepares the picture to be saved in microSD.
-  * @param  None
-  * @retval None
-  */
-static void Prepare_Picture(void)
-{
-  const uint32_t x0 = 98;
-  const uint32_t x1 = BSP_LCD_GetXSize()- 7;
-  const uint32_t y0 = 7;
-  const uint32_t y1 = BSP_LCD_GetYSize()- 98;
-  uint32_t addrSrc = LCD_FRAME_BUFFER;
-  uint32_t addrDst = CONVERTED_FRAME_BUFFER;
-  static DMA2D_HandleTypeDef hdma2d_eval;
-  uint32_t lineCnt = 0;
-
-  /* Configure the DMA2D Mode, Color Mode and output offset : used to convert ARGB8888 to RGB888 */
-  /* used in BMP file format                                                                     */
-  hdma2d_eval.Init.Mode         = DMA2D_M2M_PFC;
-  hdma2d_eval.Init.ColorMode    = DMA2D_RGB888; /* DMA2D Output format */
-  hdma2d_eval.Init.OutputOffset = 0;
-
-  /* Foreground Configuration */
-  hdma2d_eval.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
-  hdma2d_eval.LayerCfg[1].InputAlpha = 0xFF;
-  hdma2d_eval.LayerCfg[1].InputColorMode = DMA2D_INPUT_ARGB8888; /* DMA2D input format */
-  hdma2d_eval.LayerCfg[1].InputOffset = 0;
-
-  hdma2d_eval.Instance = DMA2D;
-  
-  /* DMA2D Initialization */
-  if(HAL_DMA2D_Init(&hdma2d_eval) == HAL_OK)
-  {
-    if(HAL_DMA2D_ConfigLayer(&hdma2d_eval, 1) != HAL_OK)
-    {
-      Error_Handler();
-    }
-  }
-  else 
-  {
-    Error_Handler();
-  }
-  
-  /* Go to start of last drawing pad useful line from LCD frame buffer */
-  addrSrc += (((y1 * BSP_LCD_GetXSize()) + x0) * ARGB8888_BYTE_PER_PIXEL);
-  
-  /* Copy and Convert picture from LCD frame buffer in ARGB8888 to Converted frame buffer in
-   * RGB888 pixel format for all the useful lines of the drawing pad */
-  for(lineCnt = y0; lineCnt <= y1; lineCnt++)
-  {
-    if (HAL_DMA2D_Start(&hdma2d_eval, addrSrc, addrDst, (x1 - x0), 1) == HAL_OK)
-    {
-      /* Polling For DMA transfer */
-      HAL_DMA2D_PollForTransfer(&hdma2d_eval, 20);
-    }
-
-    /* Increment the destination address by one line RGB888, this will add one padding pixel */
-    addrDst += ((x1 - x0) * RGB888_BYTE_PER_PIXEL) + RGB888_BYTE_PER_PIXEL;
-    
-    /* Decrement the source address by one line */
-    addrSrc -= (BSP_LCD_GetXSize() * ARGB8888_BYTE_PER_PIXEL);
-  }
-}
 
 /**
   * @brief  Updates the selected color
@@ -517,27 +256,6 @@ static void Update_Color(void)
   BSP_LCD_SetTextColor(color);
 }
 
-/**
-  * @brief  Updates the selected size
-  * @param  size: Size to be updated
-  * @retval None
-  */
-static void Update_Size(uint8_t size)
-{
-  static uint32_t color;
-
-  /* Get the current text color */
-  color = BSP_LCD_GetTextColor();
-  
-  /* Update the selected size icon */
-  BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-  BSP_LCD_FillCircle(520, (BSP_LCD_GetYSize() - 35), 20);
-  BSP_LCD_SetTextColor(color);
-  BSP_LCD_FillCircle(520, (BSP_LCD_GetYSize() - 35), size);
-  BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-  BSP_LCD_DrawCircle(520, (BSP_LCD_GetYSize() - 35), size);
-  BSP_LCD_SetTextColor(color);
-}
 
 /**
   * @brief  This function is executed in case of error occurrence.
