@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<item key="hasShownOverlayPopupBefore" value="true"/>
-	<item key="replaceBarOpen" value="false"/>
+	<item key="replaceBarOpen" value="true"/>
 	<list key="searchhistory">
+		<item value="0xAA"/>
 		<item value="pixel"/>
 		<item value="color"/>
 		<item value="SDPath"/>
 		<item value="DAC"/>
 		<item value="toggle"/>
+	</list>
+	<list key="replacehistory">
+		<item value="0x00"/>
 	</list>
 </section>

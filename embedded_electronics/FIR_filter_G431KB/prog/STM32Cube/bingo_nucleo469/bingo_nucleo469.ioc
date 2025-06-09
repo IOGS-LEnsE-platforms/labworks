@@ -1,0 +1,15 @@
+# STM32CubeMX Project File
+ProjectManager.ProjectName=bingo_nucleo469
+ProjectManager.TargetToolchain=STM32CubeIDE
+Mcu.Name=STM32F469NIHx
+MxCube.Version=6.10.0
+MxDb.Version=DB.6.0.10
+ProjectManager.ProjectName=bingo_nucleo469
+ProjectManager.ProjectFileName=bingo_nucleo469.ioc
+ProjectManager.UnderRoot=true
+ProjectManager.MainLocation=Core/Src
+ProjectManager.DefaultFWLocation=true
+ProjectManager.CustomerFirmwarePackage=null
+ProjectManager.LibraryCopy=1
+ProjectManager.TargetToolchain=STM32CubeIDE
+ProjectManager.PreviousToolchain=STM32CubeIDE

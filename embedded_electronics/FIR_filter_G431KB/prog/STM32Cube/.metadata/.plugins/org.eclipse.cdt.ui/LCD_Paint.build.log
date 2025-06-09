@@ -1,10 +1,12 @@
-19:00:14 **** Incremental Build of configuration Debug for project LCD_Paint ****
+22:01:15 **** Incremental Build of configuration Debug for project LCD_Paint ****
 make -j12 all 
-arm-none-eabi-size  LCD_Paint.elf 
-   text	   data	    bss	    dec	    hex	filename
-  40684	     68	   3908	  44660	   ae74	LCD_Paint.elf
-Finished building: default.size.stdout
- 
+arm-none-eabi-gcc -o "LCD_Paint.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Projets\STM32\LCD_Paint\STM32CubeIDE\STM32F469NIHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LCD_Paint.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.10.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: ./Application/User/main.o:D:/Projets/STM32/LCD_Paint/STM32CubeIDE/Debug/../../Inc/bingoball.h:37: multiple definition of `framebuffer'; ./Application/User/bingoball.o:D:/Projets/STM32/LCD_Paint/STM32CubeIDE/Debug/../../Inc/bingoball.h:37: first defined here
+C:/ST/STM32CubeIDE_1.10.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: LCD_Paint.elf section `.bss' will not fit in region `RAM'
+C:/ST/STM32CubeIDE_1.10.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: region `RAM' overflowed by 1212296 bytes
+collect2.exe: error: ld returned 1 exit status
+make: *** [makefile:69: LCD_Paint.elf] Error 1
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
 
-19:00:14 Build Finished. 0 errors, 0 warnings. (took 304ms)
+22:01:16 Build Failed. 4 errors, 0 warnings. (took 552ms)
 

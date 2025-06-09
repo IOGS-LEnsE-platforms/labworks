@@ -1,52 +1,9 @@
-19:00:05 **** Incremental Build of configuration Debug for project LCD_Paint ****
+22:01:15 **** Incremental Build of configuration Debug for project LCD_Paint ****
 make -j12 all 
-arm-none-eabi-gcc "D:/Projets/STM32/LCD_Paint/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_STM32469I_DISCOVERY -DUSE_HAL_DRIVER -DUSE_STM32469I_DISCO_REVC -DSTM32F469xx -DTS_MULTI_TOUCH_SUPPORTED -c -I../../Inc -I../../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../../Drivers/STM32F4xx_HAL_Driver/Inc -I../../Drivers/BSP/STM32469I-Discovery -I../../Drivers/BSP/Components/ft6x06 -I../../Drivers/BSP/Components/Common -I../../Drivers/BSP/Components -I../../Utilities -I../../Utilities/Fonts -I../../Middlewares/Third_Party/FatFs/src -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Application/User/main.d" -MT"Application/User/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Application/User/main.o"
-D:/Projets/STM32/LCD_Paint/Src/main.c: In function 'main':
-D:/Projets/STM32/LCD_Paint/Src/main.c:165:14: warning: passing argument 1 of 'Draw_Image' from incompatible pointer type [-Wincompatible-pointer-types]
-  165 |   Draw_Image(&im_1_1, LCD_COLOR_WHITE);
-      |              ^~~~~~~
-      |              |
-      |              const volatile unsigned char (*)[40]
-D:/Projets/STM32/LCD_Paint/Src/main.c:83:33: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'const volatile unsigned char (*)[40]'
-   83 | static void Draw_Image(uint8_t *pbmp, uint32_t color);
-      |                        ~~~~~~~~~^~~~
-D:/Projets/STM32/LCD_Paint/Src/main.c:100:12: warning: unused variable 'ts_status' [-Wunused-variable]
-  100 |   uint32_t ts_status  = TS_OK;
-      |            ^~~~~~~~~
-D:/Projets/STM32/LCD_Paint/Src/main.c: At top level:
-D:/Projets/STM32/LCD_Paint/Src/main.c:244:13: warning: 'Update_Color' defined but not used [-Wunused-function]
-  244 | static void Update_Color(void)
-      |             ^~~~~~~~~~~~
-D:/Projets/STM32/LCD_Paint/Src/main.c:220:13: warning: 'LTDC_Operation' defined but not used [-Wunused-function]
-  220 | static void LTDC_Operation(uint32_t Enable_LTDC)
-      |             ^~~~~~~~~~~~~~
-D:/Projets/STM32/LCD_Paint/Src/main.c:79:17: warning: 'Radius' defined but not used [-Wunused-variable]
-   79 | static uint32_t Radius = 10;
-      |                 ^~~~~~
-D:/Projets/STM32/LCD_Paint/Src/main.c:75:37: warning: 'bmpFileInfoHeader' defined but not used [-Wunused-variable]
-   75 | static BitMapFileInfoHeader_Typedef bmpFileInfoHeader;
-      |                                     ^~~~~~~~~~~~~~~~~
-D:/Projets/STM32/LCD_Paint/Src/main.c:74:37: warning: 'bmpFileHeader' defined but not used [-Wunused-variable]
-   74 | static BitMapFileHeader_Typedef     bmpFileHeader;
-      |                                     ^~~~~~~~~~~~~
-D:/Projets/STM32/LCD_Paint/Src/main.c:71:16: warning: 'buffer' defined but not used [-Wunused-variable]
-   71 | static uint8_t buffer[_MAX_SS]; /* a work buffer for the f_mkfs() */
-      |                ^~~~~~
 arm-none-eabi-gcc -o "LCD_Paint.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Projets\STM32\LCD_Paint\STM32CubeIDE\STM32F469NIHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LCD_Paint.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: LCD_Paint.elf
- 
-arm-none-eabi-size  LCD_Paint.elf 
-arm-none-eabi-objdump -h -S LCD_Paint.elf  > "LCD_Paint.list"
-   text	   data	    bss	    dec	    hex	filename
-  40684	     68	   3908	  44660	   ae74	LCD_Paint.elf
-Finished building: default.size.stdout
- 
-Finished building: LCD_Paint.list
- 
-19:00:14 **** Incremental Build of configuration Debug for project LCD_Paint ****
-make -j12 all 
-arm-none-eabi-size  LCD_Paint.elf 
-   text	   data	    bss	    dec	    hex	filename
-  40684	     68	   3908	  44660	   ae74	LCD_Paint.elf
-Finished building: default.size.stdout
- 
+C:/ST/STM32CubeIDE_1.10.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: ./Application/User/main.o:D:/Projets/STM32/LCD_Paint/STM32CubeIDE/Debug/../../Inc/bingoball.h:37: multiple definition of `framebuffer'; ./Application/User/bingoball.o:D:/Projets/STM32/LCD_Paint/STM32CubeIDE/Debug/../../Inc/bingoball.h:37: first defined here
+C:/ST/STM32CubeIDE_1.10.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: LCD_Paint.elf section `.bss' will not fit in region `RAM'
+C:/ST/STM32CubeIDE_1.10.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: region `RAM' overflowed by 1212296 bytes
+collect2.exe: error: ld returned 1 exit status
+make: *** [makefile:69: LCD_Paint.elf] Error 1
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
