@@ -1,9 +1,9 @@
-20:25:55 **** Incremental Build of configuration Debug for project LCD_Paint ****
+19:54:06 **** Incremental Build of configuration Debug for project LCD_Paint ****
 make -j12 all 
 arm-none-eabi-gcc "D:/Projets/STM32/LCD_Paint/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_STM32469I_DISCOVERY -DUSE_HAL_DRIVER -DUSE_STM32469I_DISCO_REVC -DSTM32F469xx -DTS_MULTI_TOUCH_SUPPORTED -c -I../../Inc -I../../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../../Drivers/STM32F4xx_HAL_Driver/Inc -I../../Drivers/BSP/STM32469I-Discovery -I../../Drivers/BSP/Components/ft6x06 -I../../Drivers/BSP/Components/Common -I../../Drivers/BSP/Components -I../../Utilities -I../../Utilities/Fonts -I../../Middlewares/Third_Party/FatFs/src -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Application/User/main.d" -MT"Application/User/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Application/User/main.o"
 D:/Projets/STM32/LCD_Paint/Src/main.c: In function 'main':
 D:/Projets/STM32/LCD_Paint/Src/main.c:158:14: warning: passing argument 1 of 'Draw_Image' from incompatible pointer type [-Wincompatible-pointer-types]
-  158 |   Draw_Image(&im_1_1, LCD_COLOR_WHITE);
+  158 |   Draw_Image(&im_1_1, LCD_COLOR_YELLOW);
       |              ^~~~~~~
       |              |
       |              const volatile unsigned char (*)[3000]
@@ -42,4 +42,11 @@ arm-none-eabi-objdump -h -S LCD_Paint.elf  > "LCD_Paint.list"
 Finished building: default.size.stdout
  
 Finished building: LCD_Paint.list
+ 
+19:54:47 **** Incremental Build of configuration Debug for project LCD_Paint ****
+make -j12 all 
+arm-none-eabi-size  LCD_Paint.elf 
+   text	   data	    bss	    dec	    hex	filename
+  43680	     68	   3908	  47656	   ba28	LCD_Paint.elf
+Finished building: default.size.stdout
  
