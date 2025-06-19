@@ -19,7 +19,7 @@ InterruptIn   mode_in(PA_11);
 
 AnalogOut   comp_erreur(PA_4);
 AnalogOut   mesure_out(PA_5);
-DigitalOut  led_signe(PA_7);
+DigitalOut  led_signe(PA_12);
 
 PwmOut      moteur_1(PB_1);  
 PwmOut      moteur_2(PB_0);  
@@ -71,7 +71,7 @@ void tik_ISR(void){
 			comp_erreur.write(-t_erreur_f); 
 			led_signe = 1; 
 			moteur_1.write(0);  
-			moteur_2.write(K_GAIN*t_erreur_f);   
+			moteur_2.write(-K_GAIN*t_erreur_f);   
 		}
 	}
 	else{
@@ -88,11 +88,11 @@ void tik_ISR(void){
 
 void lcd_refresh_consigne(void){
 	sprintf(lcd_disp, "#######");
-	my_lcd.set_position(20, 45);	
+	my_lcd.set_position(20, 50);	
 	my_lcd.draw_string(lcd_disp, SSD1306_BLACK, LARGE);
 	t_consigne_f_new = t_consigne_f;
 	sprintf(lcd_disp, "%0.2lf", t_consigne_f_new);
-	my_lcd.set_position(20, 45);	
+	my_lcd.set_position(20, 50);	
 	my_lcd.draw_string(lcd_disp, SSD1306_WHITE, LARGE);
 	t_consigne_f_old = t_consigne_f_new;
 	my_lcd.display();	
@@ -126,22 +126,22 @@ int main()
 			}
 			if(lcd_update){
 				my_lcd.clear_screen();
-				my_lcd.set_position(20, 32);	
+				my_lcd.set_position(20, 37);	
 				sprintf(lcd_disp, "Consigne");				
 				my_lcd.draw_string(lcd_disp, SSD1306_WHITE, NORMAL);
-				my_lcd.set_position(20, 45);	
+				my_lcd.set_position(20, 50);	
 				sprintf(lcd_disp, "%0.2lf", t_consigne_f);
 				my_lcd.draw_string(lcd_disp, SSD1306_WHITE, LARGE);
 				if(mode_in == 1){
 					my_lcd.set_position(10, 0);					
 					my_lcd.draw_string("Mode", SSD1306_WHITE, NORMAL);
-					my_lcd.set_position(10, 10);	
+					my_lcd.set_position(10, 15);	
 					my_lcd.draw_string("REGUL", SSD1306_WHITE, LARGE);
 				}
 				else{
 					my_lcd.set_position(10, 0);					
 					my_lcd.draw_string("Mode", SSD1306_WHITE, NORMAL);
-					my_lcd.set_position(10, 10);	
+					my_lcd.set_position(10, 15);	
 					my_lcd.draw_string("SUIVEUR", SSD1306_WHITE, LARGE);
 				}
 				my_lcd.display();
