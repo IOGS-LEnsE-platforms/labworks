@@ -11,6 +11,7 @@
 #include "ssd1306_constants.h"
 
 #define		TIMING		10
+#define		BINGO_END_TIMER		100		// * 36ms
 
 
 I2C         my_i2c(PB_7, PB_6);
@@ -19,11 +20,11 @@ SSD1306     my_lcd(&my_i2c, MAX_X, MAX_Y);
 
 void tik_ISR(void){
   cnt_tik = !cnt_tik;
-	tik_cnt++;
+	if(tik_cnt != 0)	tik_cnt--;
 	mvt_speed_cnt++;
 }
 
-void mvt_ISR(void){
+void cnt_inc_ISR(void){
 	mvt_cnt++;
 	if(mode == SMOOTH){
 		if(mvt_cnt % SMOOTH_NB == 0){
@@ -33,6 +34,13 @@ void mvt_ISR(void){
 	mvt_detected = true;
 	mvt_speed_cnt_old = mvt_speed_cnt;
 	mvt_speed_cnt = 0;
+}
+
+void mvt_ISR(void){
+	mode = BINGO;
+	tik_cnt = BINGO_END_TIMER;
+	printf("BINGO \r\n");
+	cnt_inc_ISR();
 }
 
 
@@ -71,7 +79,7 @@ int main()
 	
 	// Timing counter Init
 	tik.attach(&tik_ISR, 100us);
-	tik_smooth.attach(&mvt_ISR, 36ms);
+	tik_smooth.attach(&cnt_inc_ISR, 36ms);
 	led1 = 1;
 	
 	/*
@@ -87,10 +95,23 @@ int main()
 	// MAIN LOOP
 	while (true)
 	{
+		/* Mode modification */
+		if(tik_cnt == 0){
+			mode = SMOOTH;
+			printf("SMOOTH \r\n");
+		}
+		
+		/* Wheel Rotation Detection */
 		if(mvt_detected){ 
-			//bingo_mirror();
-			smooth_mirror();
-			mvt_detected = false;
+			switch(mode){
+				case BINGO:
+					bingo_mirror();
+					break;
+				case SMOOTH:
+				default:
+					smooth_mirror();
+			}
+			mvt_detected = false;			
 		}
 		else{
 			__asm__("nop");
@@ -99,41 +120,7 @@ int main()
 		}
 
 		/* Mode auto si non détection de mouvement - TIMER A FAIRE */
-		
-		/*
-		switch(mode){
-			case BINGO:
-				color_choice = mvt_cnt % 6;
-				switch(color_choice){
-					case 0:
-						strip_mirror.send_leds((int *)violet);
-						break;
-					case 1:
-						strip_mirror.send_leds((int *)blue);
-						break;
-					case 2:
-						strip_mirror.send_leds((int *)yellow);
-						break;
-					case 3:
-						strip_mirror.send_leds((int *)red);
-						break;
-					default:
-						break;
-				}
-				break;
-			
-			case INTENSITY:
-				break;
-				
-			
-			case SMOOTH:
-			default:
-				color_choice = smooth_rgb(tik_cnt);
-				leds_mirror.set_all_RGB_int(color_choice);
-				strip_mirror.send_leds(leds_mirror.get_array());
-				break;
-		}
-		*/
+
 		
 	}
 }
