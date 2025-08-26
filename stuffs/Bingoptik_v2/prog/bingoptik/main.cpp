@@ -9,35 +9,9 @@
 #include "bingo_strips.h"
 #include "ssd1306.h"
 #include "ssd1306_constants.h"
-#include "WS2812.h"
-#include "PixelArray.h"
 
 #define		TIMING		10
 
-enum 		Mode 		mode = SMOOTH;
-
-WS2812  strip_mirror(PA_6, STRIP_SIZE_MIRROR, WS2812_STD);
-PixelArray leds_mirror(STRIP_SIZE_MIRROR, WS2812_STD);
-
-/*
-WS2812  strip_bobine(PA_7, STRIP_SIZE_BOBINE, WS2812_STD);
-PixelArray leds_bobine(STRIP_SIZE_BOBINE, WS2812_STD);
-*/
-
-DigitalOut led1(LED1);
-
-InterruptIn	mvt_detect_in(PA_7);
-int					mvt_cnt = 0;
-int					mvt_cnt_old = 0;
-bool				mvt_detected = false;
-int					mvt_speed_cnt = 0;
-int					mvt_speed_cnt_old = 0;
-
-
-DigitalIn   mode_in(PA_11);
-Ticker tik;
-DigitalOut  cnt_tik(PA_2);
-int					tik_cnt = 0;
 
 I2C         my_i2c(PB_7, PB_6);
 SSD1306     my_lcd(&my_i2c, MAX_X, MAX_Y);
@@ -51,109 +25,25 @@ void tik_ISR(void){
 
 void mvt_ISR(void){
 	mvt_cnt++;
+	if(mode == SMOOTH){
+		if(mvt_cnt % SMOOTH_NB == 0){
+			tik_cnt_smooth++;
+		}
+	}
 	mvt_detected = true;
 	mvt_speed_cnt_old = mvt_speed_cnt;
 	mvt_speed_cnt = 0;
 }
 
 
-void test1(void){
-	int color_choice = mvt_cnt % 6;
-	printf("\tD %d S = %d \r\n", color_choice, mvt_speed_cnt_old);
-	strip_mirror.break_trame();
-	switch(color_choice){
-		case 0:
-			if(mvt_speed_cnt_old > SPEED_MAX){
-				printf("L\t");
-				strip_mirror.send_leds((int *)blue_low);
-			}
-			else{
-				printf("S\t");
-				strip_mirror.send_leds((int *)blue);						
-			}
-			break;
-		case 1:
-			if(mvt_speed_cnt_old > SPEED_MAX){
-				printf("L\t");
-				strip_mirror.send_leds((int *)yellow_low);
-			}
-			else{
-				printf("S\t");
-				strip_mirror.send_leds((int *)yellow);					
-			}					
-			break;
-		case 2:
-			if(mvt_speed_cnt_old > SPEED_MAX){
-				printf("L\t");
-				strip_mirror.send_leds((int *)violet_low);
-			}
-			else{
-				printf("S\t");
-				strip_mirror.send_leds((int *)violet);				
-			}		
-			break;
-		case 3:
-			if(mvt_speed_cnt_old > SPEED_MAX){
-				printf("L\t");
-				strip_mirror.send_leds((int *)orange_low);
-			}
-			else{
-				printf("S\t");
-				strip_mirror.send_leds((int *)orange);				
-			}		
-			break;
-		case 4:
-			if(mvt_speed_cnt_old > SPEED_MAX){
-				printf("L\t");
-				strip_mirror.send_leds((int *)red_low);
-			}
-			else{
-				printf("S\t");
-				strip_mirror.send_leds((int *)red);				
-			}		
-			break;
-		case 5:
-			if(mvt_speed_cnt_old > SPEED_MAX){
-				printf("L\t");
-				strip_mirror.send_leds((int *)green_low);
-			}
-			else{
-				printf("S\t");
-				strip_mirror.send_leds((int *)green);				
-			}		
-			break;
-		default:
-			break;
-	}
-}
 
-
-void test2(void){
-	strip_mirror.break_trame();
-	if(mvt_speed_cnt_old < SPEED_MAX){  // Fast
-		for(int k = 0; k < STRIP_SIZE_MIRROR; k++){
-			uint8_t val = sine_table[(k+2*mvt_cnt)%110];
-			int led_nb = mvt_cnt % COLOR_VARIATION;
-			leds_mirror.set_pix_RGB(k, val*R_trans[led_nb], val*G_trans[led_nb], val*B_trans[led_nb]);
-		}
-		mvt_cnt_old = mvt_cnt;
-	}
-	else{
-		for(int k = 0; k < STRIP_SIZE_MIRROR; k++){
-			uint8_t val = sine_table[(k+mvt_cnt_old)%110];
-			int led_nb = mvt_cnt_old % 6;
-			leds_mirror.set_pix_RGB(k, val*R_val[led_nb], val*G_val[led_nb], val*B_val[led_nb]);
-		}
-	}
-	strip_mirror.send_leds(leds_mirror.get_array());
-}
-
+/* Défilement couleur sur 3 LEDs uniquement - OK pour bobine ? A modifier ? */
 void test3(int cnt){
 	int val = cnt % STRIP_SIZE_MIRROR;
-	printf("%d \r\n", val);
-	for(int k = val; k < val+3; k++){
+	int led_nb = mvt_cnt % COLOR_VARIATION;
+	for(int k = val; k < val+BOBINE_NB_LED; k++){
 		leds_mirror.set_pix_RGB(k, 0, 0, 0);
-		leds_mirror.set_pix_RGB(k+3, 128, 0, 128);
+		leds_mirror.set_pix_RGB(k+BOBINE_NB_LED, R_trans[led_nb], G_trans[led_nb], B_trans[led_nb]);
 	}	
 	strip_mirror.send_leds(leds_mirror.get_array());
 }
@@ -171,16 +61,17 @@ int main()
 
 	// LEDs strip Init - int t0h, int t0l, int t1h, int t1l
 	strip_mirror.set_timings(3, 10, 8, 5);
-	//strip_bobine.set_timings(3, 10, 8, 5);
+	strip_bobine.set_timings(3, 10, 8, 5);
 
 	strip_mirror.break_trame();
 	strip_mirror.send_leds(leds_mirror.get_array()); 
-	//strip_bobine.break_trame();
-	//strip_bobine.send_leds(leds_bobine.get_array());
+	strip_bobine.break_trame();
+	strip_bobine.send_leds(leds_bobine.get_array());
 	printf("\tEnd of STRIPS Init\r\n"); 
 	
 	// Timing counter Init
 	tik.attach(&tik_ISR, 100us);
+	tik_smooth.attach(&mvt_ISR, 36ms);
 	led1 = 1;
 	
 	/*
@@ -191,15 +82,14 @@ int main()
 	my_lcd.display();
 	*/
 	
-	mvt_detect_in.rise(&mvt_ISR);
+	//mvt_detect_in.rise(&mvt_ISR);
 
 	// MAIN LOOP
 	while (true)
 	{
 		if(mvt_detected){ 
-			//test1();
-			test2();
-			//test3(mvt_cnt);
+			//bingo_mirror();
+			smooth_mirror();
 			mvt_detected = false;
 		}
 		else{
@@ -208,6 +98,8 @@ int main()
 			__asm__("nop");
 		}
 
+		/* Mode auto si non détection de mouvement - TIMER A FAIRE */
+		
 		/*
 		switch(mode){
 			case BINGO:
