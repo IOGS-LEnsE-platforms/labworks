@@ -1,10 +1,10 @@
-20:26:28 **** Incremental Build of configuration Debug for project LCD_Paint ****
+16:02:10 **** Incremental Build of configuration Debug for project LCD_Paint ****
 make -j12 all 
 arm-none-eabi-size  LCD_Paint.elf 
    text	   data	    bss	    dec	    hex	filename
-  52792	     68	   3908	  56768	   ddc0	LCD_Paint.elf
+ 106260	     68	   3980	 110308	  1aee4	LCD_Paint.elf
 Finished building: default.size.stdout
  
 
-20:26:29 Build Finished. 0 errors, 0 warnings. (took 305ms)
+16:02:10 Build Finished. 0 errors, 0 warnings. (took 360ms)
 
