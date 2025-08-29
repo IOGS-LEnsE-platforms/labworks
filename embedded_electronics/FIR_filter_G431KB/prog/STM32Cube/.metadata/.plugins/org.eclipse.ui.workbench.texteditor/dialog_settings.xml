@@ -3,6 +3,7 @@
 	<item key="hasShownOverlayPopupBefore" value="true"/>
 	<item key="replaceBarOpen" value="true"/>
 	<list key="searchhistory">
+		<item value="ana"/>
 		<item value="HAL_ADC_Init"/>
 		<item value="HAL_ADC"/>
 		<item value="adc"/>

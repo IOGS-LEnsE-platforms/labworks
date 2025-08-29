@@ -1,10 +1,10 @@
-18:59:27 **** Incremental Build of configuration Debug for project BingOptik_LCD ****
+21:44:49 **** Incremental Build of configuration Debug for project BingOptik_LCD ****
 make -j12 all 
 arm-none-eabi-size  BingOptik_LCD.elf 
    text	   data	    bss	    dec	    hex	filename
- 111448	    180	   4300	 115928	  1c4d8	BingOptik_LCD.elf
+ 108176	    104	   3968	 112248	  1b678	BingOptik_LCD.elf
 Finished building: default.size.stdout
  
 
-18:59:28 Build Finished. 0 errors, 0 warnings. (took 419ms)
+21:44:49 Build Finished. 0 errors, 0 warnings. (took 414ms)
 

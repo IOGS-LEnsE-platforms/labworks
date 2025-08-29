@@ -3,5 +3,7 @@ LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
 configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:LCD_Paint,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:BingOptik_LCD
 eclipse.preferences.version=1
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:BingOptik_LCD/activeLaunchMode=run
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:BingOptik_LCD/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:LCD_Paint/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:LCD_Paint/activeLaunchTarget=null\:---
