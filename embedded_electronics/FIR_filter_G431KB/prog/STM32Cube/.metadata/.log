@@ -1643,3 +1643,18 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64 D:\Projets\STM32\BingO
 
 !ENTRY org.eclipse.cdt.core 1 0 2025-08-28 16:06:40.638
 !MESSAGE Indexed 'BingOptik_LCD' (4 sources, 103 headers) in 1.96 sec: 7,261 declarations; 17,401 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0081%)
+!SESSION 2025-08-29 17:57:47.591 -----------------------------------------------
+eclipse.buildId=Version 1.18.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-29 17:57:52.931
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-29 17:57:52.954
+!MESSAGE Log4j2 initialized with config file D:\tools\git_repo\LEnsE\platforms\labworks\embedded_electronics\FIR_filter_G431KB\prog\STM32Cube\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-29 17:58:01.212
+!MESSAGE Started RMI Server, listening on port 41337
