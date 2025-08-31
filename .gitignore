@@ -2,6 +2,14 @@
 **/Debug/
 **/Release/
 **/BUILD/
+*.log
+
+# Ignorer les dossiers de build générés par CubeIDE
+/Debug/
+/Release/
+
+*.elf
+*.bin
 
 # Prerequisites
 *.d
