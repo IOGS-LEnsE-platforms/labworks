@@ -14,8 +14,13 @@ D6 / PA_6		SYNC0 - Interrupt In / Start Color 0
 D9 / PA_7		SYNC - Interrupt In / Clk sync
 D12/ PB_14		MODE - Mode Bingo or Smooth (from L432)
 
+D7 / PG_11		LED Strip 1
+D8 / PG_10		LED Strip 2
+
 
 TO DO : 
  - Random with Analog in (for number selection - https://controllerstech.com/stm32-adc1-single-channel-polling-mode/)
  - Synchronize with clk input (Interrupt - https://deepbluembedded.com/stm32-external-interrupt-example-lab/ )
  - Synchronize color start and mode
+ 
+ ws2812 / https://www.youtube.com/watch?v=mdZerUTFJUw

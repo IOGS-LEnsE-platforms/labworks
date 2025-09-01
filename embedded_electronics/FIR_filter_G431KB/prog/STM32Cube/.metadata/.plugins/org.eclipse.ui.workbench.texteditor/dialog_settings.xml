@@ -3,6 +3,8 @@
 	<item key="hasShownOverlayPopupBefore" value="true"/>
 	<item key="replaceBarOpen" value="true"/>
 	<list key="searchhistory">
+		<item value="SW1"/>
+		<item value="HAL_GPIO_Write"/>
 		<item value="ana"/>
 		<item value="HAL_ADC_Init"/>
 		<item value="HAL_ADC"/>

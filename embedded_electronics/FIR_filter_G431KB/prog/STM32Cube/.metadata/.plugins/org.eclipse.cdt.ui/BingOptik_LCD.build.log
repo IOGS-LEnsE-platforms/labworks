@@ -1,19 +1,10 @@
-18:13:03 **** Incremental Build of configuration Debug for project BingOptik_LCD ****
+21:21:54 **** Incremental Build of configuration Debug for project BingOptik_LCD ****
 make -j12 all 
-arm-none-eabi-gcc -o "BingOptik_LCD.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Projets\STM32\BingOptik\STM32CubeIDE\STM32F469NIHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BingOptik_LCD.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: BingOptik_LCD.elf
- 
 arm-none-eabi-size  BingOptik_LCD.elf 
-arm-none-eabi-objdump -h -S BingOptik_LCD.elf  > "BingOptik_LCD.list"
    text	   data	    bss	    dec	    hex	filename
- 108264	    104	   3968	 112336	  1b6d0	BingOptik_LCD.elf
-arm-none-eabi-objcopy  -O binary BingOptik_LCD.elf  "BingOptik_LCD.bin"
+ 109784	    184	   4344	 114312	  1be88	BingOptik_LCD.elf
 Finished building: default.size.stdout
  
-Finished building: BingOptik_LCD.list
- 
-Finished building: BingOptik_LCD.bin
- 
 
-18:13:04 Build Finished. 0 errors, 0 warnings. (took 872ms)
+21:21:55 Build Finished. 0 errors, 0 warnings. (took 715ms)
 

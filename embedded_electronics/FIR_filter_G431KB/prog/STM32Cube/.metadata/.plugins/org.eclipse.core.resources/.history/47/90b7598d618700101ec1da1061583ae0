@@ -1,0 +1,75 @@
+#include "WS2812.h"
+
+/* WS2812B */
+/*  T0H = 0.4us / T0L = 0.85us
+    T1H = 0.8us / T1L = 0.45us
+*/
+
+void init_ws2812(WS2812 *ws, int pin_strip, int port_name, int nb_leds, int nb_bits)
+{
+	ws->pin_nb = pin_strip;
+	ws->__nb_leds = nb_leds;
+	ws->__nb_bits = nb_bits;
+}
+
+void send_led_one(WS2812 *ws){
+    int k;
+    ws->__ws_led = 1;
+    for(k = 0; k < ws->t1h; k++)
+        __nop();
+    ws->__ws_led = 0;
+    for(k = 0; k < ws->t1l; k++)
+        __nop();
+}
+
+void send_led_zero(WS2812 *ws){
+    int k;
+    ws->__ws_led = 1;
+    for(k = 0; k < 6; k++)  // Attention, pb avec this->t0h !!
+        __nop();
+    this->__ws_led = 0;
+    for(k = 0; k < this->t0l; k++)
+        __nop();
+}
+
+// Break function
+void break_trame(WS2812 *ws){
+    this->__ws_led = 0;
+    wait_us(100);
+}
+
+void send_led_trame(WS2812 *ws, int cl){
+    for(int k = 0; k < this->__nb_bits; k++){
+        int bin = cl >> (this->__nb_bits-1-k);
+        if((bin & 0x1) == 1){
+            this->send_led_one();
+        }else{
+            this->send_led_zero();
+        }
+    }
+}
+
+void send_leds(WS2812 *ws, int *leds){
+    __disable_irq();
+    if(this->__nb_bits == 32){
+        
+    }
+    for(int k = 0; k < this->__nb_leds; k++){
+        this->send_led_trame(leds[k]);
+    }
+    __enable_irq();
+}
+
+void set_timings(WS2812 *ws, int t0h, int t0l, int t1h, int t1l){
+    this->t0h = t0h;
+    this->t0l = t0l;
+    this->t1h = t1h;
+    this->t1l = t1l;
+}
+
+
+void blackout(WS2812 *ws){
+    for(int k = 0; k < this->__nb_leds; k++){
+        this->send_led_trame(0);
+    }
+}
