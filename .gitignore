@@ -4,12 +4,20 @@
 **/BUILD/
 *.log
 
-# Ignorer les dossiers de build générés par CubeIDE
-/Debug/
-/Release/
+# Répertoires de build Keil / STM32
+BUILD/
+build/
+Debug/
+Release/
+Objects/
+Listings/
+Output/
+.metadata/
 
 *.elf
 *.bin
+*.axf
+*.hex
 
 # Prerequisites
 *.d
