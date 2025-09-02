@@ -44,6 +44,9 @@ uint8_t		color_cnt;	// 60 different colors from L432KC - SYNC and SYNC0 inputs
 uint8_t		mode = MODE_SMOOTH;
 uint8_t		old_mode = MODE_SMOOTH;
 
+WS2812  	led_strip_mirror;
+PixelArray	led_array;
+
 uint8_t* imgs[] = { &im1_1, &im2_1, &im3_1, &im4_1, &im5_1, &im6_1, &im7_1, &im8_1, &im9_1 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,12 +76,28 @@ static void MX_ADC1_Init(void);
 int main(void)
 {
 	init_MCU();
+
+	init_ws2812(&led_strip_mirror, LED_SW1_GPIO_Port, LED_SW1_Pin, 10, 24);
+	init_array(&led_strip_mirror, 10, 24);
+
+	set_timings(&led_strip_mirror, 6, 13, 14, 5);
+	break_trame(&led_strip_mirror);
+	send_leds(&led_strip_mirror, get_array(&led_array));
+
+
+	break_trame(&led_strip_mirror);
+	set_all_RGB(&led_array, 255, 0, 128);
+	send_leds(&led_strip_mirror, get_array(&led_array));
+
 	/* START !! */
   /* Infinite loop */
   while (1)
   {
 	  //sync_action();
 	  __NOP();
+		break_trame(&led_strip_mirror);
+		set_all_RGB(&led_array, 255, 0, 128);
+		send_leds(&led_strip_mirror, get_array(&led_array));
   }
 }
 
@@ -494,6 +513,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOJ_CLK_ENABLE();
 
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOG, LED_SW1_Pin|LED_SW2_Pin, GPIO_PIN_RESET);
+
   /*Configure GPIO pin : SYNC_Pin */
   GPIO_InitStruct.Pin = SYNC_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
@@ -522,10 +545,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-
-  /* USER CODE BEGIN MX_GPIO_Init_2 */
-
-  /* USER CODE END MX_GPIO_Init_2 */
+  /*Configure GPIO pins : LED_SW1_Pin LED_SW2_Pin */
+  GPIO_InitStruct.Pin = LED_SW1_Pin|LED_SW2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 }
 
 

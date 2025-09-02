@@ -19,8 +19,8 @@
 /* */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __SAVE_H
-#define __SAVE_H
+#ifndef __IMAGES_H
+#define __IMAGES_H
 
 /* LEnsE Logo */
 #include "image_output_logo_lense_0_0.h"

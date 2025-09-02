@@ -46,6 +46,26 @@
 			<location>D:/Projets/STM32/BingOptik/Src/ts_calibration.c</location>
 		</link>
 		<link>
+			<name>Application/WS2812/PixelArray.c</name>
+			<type>1</type>
+			<location>D:/Projets/STM32/BingOptik/Drivers/WS2812/PixelArray.c</location>
+		</link>
+		<link>
+			<name>Application/WS2812/PixelArray.h</name>
+			<type>1</type>
+			<location>D:/Projets/STM32/BingOptik/Drivers/WS2812/PixelArray.h</location>
+		</link>
+		<link>
+			<name>Application/WS2812/WS2812.c</name>
+			<type>1</type>
+			<location>D:/Projets/STM32/BingOptik/Drivers/WS2812/WS2812.c</location>
+		</link>
+		<link>
+			<name>Application/WS2812/WS2812.h</name>
+			<type>1</type>
+			<location>D:/Projets/STM32/BingOptik/Drivers/WS2812/WS2812.h</location>
+		</link>
+		<link>
 			<name>Drivers/CMSIS/system_stm32f4xx.c</name>
 			<type>1</type>
 			<location>D:/Projets/STM32/BingOptik/Src/system_stm32f4xx.c</location>

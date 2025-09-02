@@ -33,6 +33,10 @@
 #include "ff_gen_drv.h"
 #include "sd_diskio.h"
 
+#include "PixelArray.h"
+#include "WS2812.h"
+
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
@@ -48,6 +52,7 @@
 #define ARGB8888_BYTE_PER_PIXEL       4
 #define RGB888_BYTE_PER_PIXEL         3
 
+#define	LED_STRIP_1_NB				10
 
 
 #define RANDOM_Pin GPIO_PIN_2
@@ -60,6 +65,10 @@
 #define SYNC0_Pin GPIO_PIN_6
 #define SYNC0_GPIO_Port GPIOA
 #define SYNC0_EXTI_IRQn EXTI9_5_IRQn
+#define LED_SW1_Pin GPIO_PIN_11
+#define LED_SW1_GPIO_Port GPIOG
+#define LED_SW2_Pin GPIO_PIN_10
+#define LED_SW2_GPIO_Port GPIOG
 
 
 /* Buffer LCD Converted to RGB888 in SDRAM in order to be copied to SD Card   */
