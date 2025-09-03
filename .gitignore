@@ -13,6 +13,7 @@ Objects/
 Listings/
 Output/
 .metadata/
+.settings/
 
 *.elf
 *.bin
