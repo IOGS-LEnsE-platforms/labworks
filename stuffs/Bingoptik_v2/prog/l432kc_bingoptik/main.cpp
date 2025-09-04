@@ -79,7 +79,7 @@ int main()
 	
 	// Timing counter Init
 	tik.attach(&tik_ISR, 100us);
-	tik_smooth.attach(&cnt_inc_ISR, 36ms);
+	//tik_smooth.attach(&cnt_inc_ISR, 36ms);
 	led1 = 1;
 	
 	/*
@@ -90,16 +90,18 @@ int main()
 	my_lcd.display();
 	*/
 	
-	//mvt_detect_in.rise(&mvt_ISR);
+	mvt_detect_in.rise(&mvt_ISR);
 
 	// MAIN LOOP
 	while (true)
 	{
 		/* Mode modification */
+		/*
 		if(tik_cnt == 0){
 			mode = SMOOTH;
 			printf("SMOOTH \r\n");
 		}
+		*/
 		
 		/* Wheel Rotation Detection */
 		if(mvt_detected){ 

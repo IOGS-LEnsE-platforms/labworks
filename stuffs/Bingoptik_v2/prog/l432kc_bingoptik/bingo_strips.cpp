@@ -1,6 +1,6 @@
 #include "bingo_strips.h"
 
-enum 		Mode 		mode = SMOOTH;
+enum 		Mode 		mode = BINGO;
 
 WS2812  strip_mirror(PA_6, STRIP_SIZE_MIRROR, WS2812_STD);
 PixelArray leds_mirror(STRIP_SIZE_MIRROR, WS2812_STD);
