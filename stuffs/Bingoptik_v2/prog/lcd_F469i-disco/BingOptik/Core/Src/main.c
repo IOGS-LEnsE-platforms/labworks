@@ -41,8 +41,8 @@ D12/ PB_14		MODE - Mode Bingo or Smooth (from L432)
 ADC_HandleTypeDef hadc1;
 uint32_t	rand_cnt;
 uint8_t		color_cnt;	// 60 different colors from L432KC - SYNC and SYNC0 inputs
-uint8_t		mode = MODE_SMOOTH;
-uint8_t		old_mode = MODE_SMOOTH;
+uint8_t		mode = MODE_BINGO;
+uint8_t		old_mode = MODE_BINGO;
 
 WS2812  	led_strip_mirror;
 PixelArray	led_array;
@@ -177,12 +177,14 @@ void sync_action(void){
 	color_cnt++;
 
 	// Test MODE input
+	/*
 	if (HAL_GPIO_ReadPin(MODE_GPIO_Port, MODE_Pin) == GPIO_PIN_SET){
 		mode = MODE_BINGO;
 	}
 	else{
 		mode = MODE_SMOOTH;
 	}
+	*/
 
 	if(mode != old_mode){
 		BSP_LCD_Clear(LCD_COLOR_BLACK);
