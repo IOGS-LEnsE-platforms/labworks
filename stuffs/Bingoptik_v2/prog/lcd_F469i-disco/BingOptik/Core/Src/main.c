@@ -22,6 +22,9 @@ D6 / PA_6		SYNC0 - Interrupt In / Start Color 0
 D9 / PA_7		SYNC - Interrupt In / Clk sync
 D12/ PB_14		MODE - Mode Bingo or Smooth (from L432)
 
+D8 / PG10	LED Strip Mirror
+D7 / PG11	LED Strip film
+
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
@@ -45,7 +48,9 @@ uint8_t		mode = MODE_SMOOTH;
 uint8_t		old_mode = MODE_SMOOTH;
 
 WS2812  	led_strip_mirror;
-PixelArray	led_array;
+PixelArray	led_array_mirror;
+WS2812  	led_strip_film;
+PixelArray	led_array_film;
 
 uint8_t* imgs[] = { &im1_1, &im2_1, &im3_1, &im4_1, &im5_1, &im6_1, &im7_1, &im8_1, &im9_1 };
 
@@ -78,48 +83,41 @@ int main(void)
 {
 	int k;
 	init_MCU();
-	//init_LCD();
+	init_LCD();
 
-	init_ws2812(&led_strip_mirror, LED_SW1_GPIO_Port, LED_SW2_Pin, 32, 24);
-	init_array(&led_array, 32, 24);
+	init_ws2812(&led_strip_mirror, LED_SW2_GPIO_Port, LED_SW2_Pin, LED_STRIP_MIRROR_NB, 24);
+	init_array(&led_array_mirror, LED_STRIP_MIRROR_NB, 24);
+	init_ws2812(&led_strip_film, LED_SW1_GPIO_Port, LED_SW1_Pin, LED_STRIP_FILM_NB, 24);
+	init_array(&led_array_film, LED_STRIP_FILM_NB, 24);
 
 	set_timings(&led_strip_mirror, 3, 6, 6, 4);
 	break_trame(&led_strip_mirror);
 	blackout(&led_strip_mirror);
-	/*
-	break_trame(&led_strip_mirror);
-	set_all_RGB(&led_array, 255, 0, 128);
-	send_leds(&led_strip_mirror, get_array(&led_array));
-	 */
+	set_timings(&led_strip_film, 3, 6, 6, 4);
+	break_trame(&led_strip_film);
+	blackout(&led_strip_film);
+
 	/* START !! */
 	/* Infinite loop */
 	while (1)
 	{
 		//sync_action();
-		/*
-		break_trame(&led_strip_mirror);
-		set_all_RGB(&led_array, 0, 0, 128);
-		send_leds(&led_strip_mirror, get_array(&led_array));
-		*/
 		for(k = 0; k < 10000000; k++)
 			__NOP();
 		break_trame(&led_strip_mirror);
-		set_all_RGB(&led_array, 255, 0, 128);
-		send_leds(&led_strip_mirror, get_array(&led_array));
+		set_all_RGB(&led_array_mirror, 255, 0, 128);
+		send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+		break_trame(&led_strip_film);
+		set_all_RGB(&led_array_film, 128, 0, 0);
+		send_leds(&led_strip_film, get_array(&led_array_film));
 		for(k = 0; k < 10000000; k++)
 			__NOP();
 		break_trame(&led_strip_mirror);
-		set_all_RGB(&led_array, 0, 128, 0);
-		send_leds(&led_strip_mirror, get_array(&led_array));
-
-		/*
-		HAL_GPIO_WritePin(LED_SW1_GPIO_Port, LED_SW1_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(LED_SW1_GPIO_Port, LED_SW1_Pin, GPIO_PIN_RESET);
-		for(int k = 0; k < 10; k++)
-			GPIOG->BSRR = GPIO_BSRR_BS11; // met la pin PG11 à 1
-		for(int k = 0; k < 10; k++)
-			GPIOG->BSRR = GPIO_BSRR_BR11; // met la pin PG11 à 0
-		*/
+		set_all_RGB(&led_array_mirror, 0, 128, 0);
+		send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+		break_trame(&led_strip_film);
+		set_all_RGB(&led_array_film, 0, 128, 128);
+		send_leds(&led_strip_film, get_array(&led_array_film));
   }
 }
 

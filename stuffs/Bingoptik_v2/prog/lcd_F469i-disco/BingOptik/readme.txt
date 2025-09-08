@@ -14,6 +14,9 @@ D6 / PA_6		SYNC0 - Interrupt In / Start Color 0
 D9 / PA_7		SYNC - Interrupt In / Clk sync
 D12/ PB_14		MODE - Mode Bingo or Smooth (from L432)
 
+D8 / PG10	LED Strip Mirror
+D7 / PG11	LED Strip film
+
 
 TO DO : 
  - Random with Analog in (for number selection - https://controllerstech.com/stm32-adc1-single-channel-polling-mode/)
