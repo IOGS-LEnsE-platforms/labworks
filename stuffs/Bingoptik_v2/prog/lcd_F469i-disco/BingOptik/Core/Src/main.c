@@ -44,8 +44,8 @@ D7 / PG11	LED Strip film
 ADC_HandleTypeDef hadc1;
 uint32_t	rand_cnt;
 uint8_t		color_cnt;	// 60 different colors from L432KC - SYNC and SYNC0 inputs
-uint8_t		mode = MODE_SMOOTH;
-uint8_t		old_mode = MODE_SMOOTH;
+Mode		mode = SMOOTH;
+Mode		old_mode = SMOOTH;
 
 WS2812  	led_strip_mirror;
 PixelArray	led_array_mirror;
@@ -197,15 +197,15 @@ void sync_action(void){
 
 	// Test MODE input
 	if (HAL_GPIO_ReadPin(MODE_GPIO_Port, MODE_Pin) == GPIO_PIN_SET){
-		mode = MODE_BINGO;
+		mode = BINGO;
 	}
 	else{
-		mode = MODE_SMOOTH;
+		mode = SMOOTH;
 	}
 
 	if(mode != old_mode){
 		BSP_LCD_Clear(LCD_COLOR_BLACK);
-		if(mode == MODE_SMOOTH){
+		if(mode == SMOOTH){
 			// Draw LEnsE Logo (Orange)
 			Draw_LEnsE();
 		}
@@ -364,11 +364,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if(GPIO_Pin == SYNC_Pin) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
+    	mode = BINGO;
     	sync_action();
-    }
-    if(GPIO_Pin == SYNC0_Pin) // If The INT Source Is EXTI Line9 (A9 Pin)
-    {
-    	color_cnt = 0;
     }
 }
 

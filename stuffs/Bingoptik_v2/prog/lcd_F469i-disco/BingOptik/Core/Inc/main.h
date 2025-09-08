@@ -66,6 +66,14 @@
 #define LED_SW2_Pin GPIO_PIN_10
 #define LED_SW2_GPIO_Port GPIOG
 
+enum Mode {
+  SMOOTH,
+  INTENSITY,
+  BINGO
+};
+
+extern enum 		Mode 		mode;
+
 
 /* Buffer LCD Converted to RGB888 in SDRAM in order to be copied to SD Card   */
 /* Starts directly at end of LCD frame buffer                                 */
