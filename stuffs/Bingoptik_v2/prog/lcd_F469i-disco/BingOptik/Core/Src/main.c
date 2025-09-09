@@ -18,12 +18,13 @@ PINOUT :
 
 D5 / PA_2		Random Analog Input (not connected)
 					- ADC1_IN / 28 cycles / Channel 2
-D6 / PA_6		SYNC0 - Interrupt In / Start Color 0
 D9 / PA_7		SYNC - Interrupt In / Clk sync
-D12/ PB_14		MODE - Mode Bingo or Smooth (from L432)
-
 D8 / PG10	LED Strip Mirror
 D7 / PG11	LED Strip film
+
+Not used
+	D12/ PB_14		MODE - Mode Bingo or Smooth (from L432)
+	D6 / PA_6		SYNC0 - Interrupt In / Start Color 0
 
   ******************************************************************************
   */
@@ -44,8 +45,8 @@ D7 / PG11	LED Strip film
 ADC_HandleTypeDef hadc1;
 uint32_t	rand_cnt;
 uint8_t		color_cnt;	// 60 different colors from L432KC - SYNC and SYNC0 inputs
-Mode		mode = SMOOTH;
-Mode		old_mode = SMOOTH;
+enum	Mode		mode = SMOOTH;
+enum 	Mode		old_mode = SMOOTH;
 
 WS2812  	led_strip_mirror;
 PixelArray	led_array_mirror;
@@ -87,8 +88,8 @@ int main(void)
 
 	init_ws2812(&led_strip_mirror, LED_SW2_GPIO_Port, LED_SW2_Pin, LED_STRIP_MIRROR_NB, 24);
 	init_array(&led_array_mirror, LED_STRIP_MIRROR_NB, 24);
-	init_ws2812(&led_strip_film, LED_SW1_GPIO_Port, LED_SW1_Pin, LED_STRIP_FILM_NB, 24);
-	init_array(&led_array_film, LED_STRIP_FILM_NB, 24);
+	init_ws2812(&led_strip_film, LED_SW1_GPIO_Port, LED_SW1_Pin, LED_STRIP_FILM_NB, 32);
+	init_array(&led_array_film, LED_STRIP_FILM_NB, 32);
 
 	set_timings(&led_strip_mirror, 3, 6, 6, 4);
 	break_trame(&led_strip_mirror);
@@ -101,21 +102,21 @@ int main(void)
 	/* Infinite loop */
 	while (1)
 	{
-		//sync_action();
+		sync_action();
 		for(k = 0; k < 10000000; k++)
 			__NOP();
-		break_trame(&led_strip_mirror);
+		//break_trame(&led_strip_mirror);
 		set_all_RGB(&led_array_mirror, 255, 0, 128);
 		send_leds(&led_strip_mirror, get_array(&led_array_mirror));
-		break_trame(&led_strip_film);
+		//break_trame(&led_strip_film);
 		set_all_RGB(&led_array_film, 128, 0, 0);
 		send_leds(&led_strip_film, get_array(&led_array_film));
 		for(k = 0; k < 10000000; k++)
 			__NOP();
-		break_trame(&led_strip_mirror);
+		//break_trame(&led_strip_mirror);
 		set_all_RGB(&led_array_mirror, 0, 128, 0);
 		send_leds(&led_strip_mirror, get_array(&led_array_mirror));
-		break_trame(&led_strip_film);
+		//break_trame(&led_strip_film);
 		set_all_RGB(&led_array_film, 0, 128, 128);
 		send_leds(&led_strip_film, get_array(&led_array_film));
   }
@@ -195,14 +196,9 @@ void sync_action(void){
 	rand_cnt++;
 	color_cnt++;
 
-	// Test MODE input
-	if (HAL_GPIO_ReadPin(MODE_GPIO_Port, MODE_Pin) == GPIO_PIN_SET){
-		mode = BINGO;
-	}
-	else{
-		mode = SMOOTH;
-	}
+	// MODE MANAGEMENT !
 
+	// Test MODE input
 	if(mode != old_mode){
 		BSP_LCD_Clear(LCD_COLOR_BLACK);
 		if(mode == SMOOTH){
