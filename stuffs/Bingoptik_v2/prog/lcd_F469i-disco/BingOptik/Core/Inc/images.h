@@ -58,12 +58,16 @@
 #include "image_output_8_1.h"
 #include "image_output_9_1.h"
 
+
+
+#define		COLOR_VARIATION		60
 #define		IMAGE_WIDTH		200
 #define		IMAGE_HEIGHT	120
 #define		LOGO_WIDTH		800
 #define		LOGO_HEIGHT		480
 #define		IMAGE_WIDTH_B	IMAGE_WIDTH / 8
 #define		COLOR_VARIATION	60
+
 
 
 /* Colors from L432 */

@@ -51,24 +51,19 @@
 #define	LED_STRIP_FILM_NB				50
 
 
-#define RANDOM_Pin GPIO_PIN_2
-#define RANDOM_GPIO_Port GPIOA
-#define MODE_Pin GPIO_PIN_14
-#define MODE_GPIO_Port GPIOB
-#define SYNC_Pin GPIO_PIN_7
-#define SYNC_GPIO_Port GPIOA
-#define SYNC_EXTI_IRQn EXTI9_5_IRQn
-#define SYNC0_Pin GPIO_PIN_6
-#define SYNC0_GPIO_Port GPIOA
-#define SYNC0_EXTI_IRQn EXTI9_5_IRQn
-#define LED_SW1_Pin GPIO_PIN_11
-#define LED_SW1_GPIO_Port GPIOG
-#define LED_SW2_Pin GPIO_PIN_10
-#define LED_SW2_GPIO_Port GPIOG
+#define RANDOM_ADC_Pin GPIO_PIN_7
+#define RANDOM_ADC_GPIO_Port GPIOA
+#define SYNC_Pin GPIO_PIN_3
+#define SYNC_GPIO_Port GPIOD
+#define SYNC_EXTI_IRQn EXTI3_IRQn
+#define LED_M_Pin GPIO_PIN_10
+#define LED_M_GPIO_Port GPIOG
+#define LED_F_Pin GPIO_PIN_15
+#define LED_F_GPIO_Port GPIOB
 
 enum Mode {
   SMOOTH,
-  INTENSITY,
+  CHANGE,
   BINGO
 };
 
@@ -88,5 +83,9 @@ uint8_t  Touchscreen_Calibration(void);
 uint16_t TouchScreen_Get_Calibrated_X(uint16_t x);
 uint16_t TouchScreen_Get_Calibrated_Y(uint16_t y);
 uint8_t  TouchScreen_IsCalibrationDone(void);
+
+
+/* Sine Wave */
+extern const uint8_t sine_table[LED_STRIP_MIRROR_NB];
 
 #endif /* __MAIN_H */

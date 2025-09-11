@@ -22,15 +22,20 @@ D9 / PA_7		SYNC - Interrupt In / Clk sync
 D8 / PG10	LED Strip Mirror
 D7 / PG11	LED Strip film
 
-Not used
-	D12/ PB_14		MODE - Mode Bingo or Smooth (from L432)
-	D6 / PA_6		SYNC0 - Interrupt In / Start Color 0
+NEW !!!
+
+D9 / PA_7		Random Analog Input (not connected)
+					- ADC1_IN / 28 cycles / Channel 2
+D14/ PB_9		SYNC - Interrupt In / Clk sync
+D8 / PG10	LED Strip Mirror
+D11/ PB15	LED Strip film
 
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "images.h"
+#include "gradient_colors.h"
 
 //extern LTDC_HandleTypeDef  hltdc_eval;
 
@@ -38,15 +43,17 @@ Not used
 
 /* Private define ------------------------------------------------------------*/
 #define			NB_OF_SERIES		1
-#define			MODE_BINGO			0
-#define			MODE_SMOOTH			1
+#define			TIMEOUT_MAX			1000
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+TIM_HandleTypeDef htim2;
+
+uint32_t	timeout_cnt;
+
 uint32_t	rand_cnt;
 uint8_t		color_cnt;	// 60 different colors from L432KC - SYNC and SYNC0 inputs
 enum	Mode		mode = SMOOTH;
-enum 	Mode		old_mode = SMOOTH;
 
 WS2812  	led_strip_mirror;
 PixelArray	led_array_mirror;
@@ -58,19 +65,25 @@ uint8_t* imgs[] = { &im1_1, &im2_1, &im3_1, &im4_1, &im5_1, &im6_1, &im7_1, &im8
 /* Private function prototypes -----------------------------------------------*/
 void init_MCU(void);
 void init_LCD(void);
+void init_strips(void);
+
 void sync_action(void);
+void timer_action(void);
+
 uint8_t *rand_number_pic(uint32_t value);
+uint16_t read_adc_polling(void);
+
 static void Draw_Image(const volatile uint8_t *pbmp, uint32_t color);
 static void Draw_Logo(const volatile uint8_t *pbmp, uint32_t color, int x, int y);
 static void Draw_LEnsE();
-static void Draw_Bingo();
-uint16_t read_adc_polling(void);
+static void Draw_Bingo(uint32_t color);
 
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 
 static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
+static void MX_TIM2_Init(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -85,23 +98,16 @@ int main(void)
 	int k;
 	init_MCU();
 	init_LCD();
+	init_strips();
+	timeout_cnt = 0;
+	mode = SMOOTH;
 
-	init_ws2812(&led_strip_mirror, LED_SW2_GPIO_Port, LED_SW2_Pin, LED_STRIP_MIRROR_NB, 24);
-	init_array(&led_array_mirror, LED_STRIP_MIRROR_NB, 24);
-	init_ws2812(&led_strip_film, LED_SW1_GPIO_Port, LED_SW1_Pin, LED_STRIP_FILM_NB, 32);
-	init_array(&led_array_film, LED_STRIP_FILM_NB, 32);
-
-	set_timings(&led_strip_mirror, 3, 6, 6, 4);
-	break_trame(&led_strip_mirror);
-	blackout(&led_strip_mirror);
-	set_timings(&led_strip_film, 3, 6, 6, 4);
-	break_trame(&led_strip_film);
-	blackout(&led_strip_film);
 
 	/* START !! */
 	/* Infinite loop */
 	while (1)
 	{
+		/*
 		sync_action();
 		for(k = 0; k < 10000000; k++)
 			__NOP();
@@ -119,6 +125,15 @@ int main(void)
 		//break_trame(&led_strip_film);
 		set_all_RGB(&led_array_film, 0, 128, 128);
 		send_leds(&led_strip_film, get_array(&led_array_film));
+		*/
+		__NOP();
+		__NOP();
+		if((timeout_cnt == 0) && (mode == BINGO)){
+			BSP_LCD_Clear(LCD_COLOR_BLACK);
+			mode = SMOOTH;
+			// Draw LEnsE Logo (Orange)
+			Draw_LEnsE();
+		}
   }
 }
 
@@ -147,6 +162,8 @@ void init_MCU(void){
 
 	MX_GPIO_Init();
 	MX_ADC1_Init();
+	MX_TIM2_Init();
+	HAL_TIM_Base_Start_IT(&htim2);
 }
 
 /**
@@ -189,46 +206,58 @@ void init_LCD(void){
 }
 
 /**
+  * @brief  Init the LED strips.
+  * @retval None
+  */
+void init_strips(void){
+	init_ws2812(&led_strip_mirror, LED_M_GPIO_Port, LED_M_Pin, LED_STRIP_MIRROR_NB, 24);
+	init_array(&led_array_mirror, LED_STRIP_MIRROR_NB, 24);
+	init_ws2812(&led_strip_film, LED_F_GPIO_Port, LED_F_Pin, LED_STRIP_FILM_NB, 32);
+	init_array(&led_array_film, LED_STRIP_FILM_NB, 32);
+
+	set_timings(&led_strip_mirror, 3, 6, 6, 4);
+	break_trame(&led_strip_mirror);
+	blackout(&led_strip_mirror);
+	set_timings(&led_strip_film, 3, 6, 6, 4);
+	break_trame(&led_strip_film);
+	blackout(&led_strip_film);
+}
+
+/**
   * @brief  Callback function on CLK SYNC input.
   * @retval None
   */
 void sync_action(void){
 	rand_cnt++;
 	color_cnt++;
-
-	// MODE MANAGEMENT !
-
-	// Test MODE input
-	if(mode != old_mode){
-		BSP_LCD_Clear(LCD_COLOR_BLACK);
-		if(mode == SMOOTH){
-			// Draw LEnsE Logo (Orange)
-			Draw_LEnsE();
-		}
-	}
-	old_mode = mode;
+	mode = BINGO;
+	timeout_cnt = TIMEOUT_MAX;
 
 	// Color selection
 	uint32_t	color_img = 0xFF000000;
 	uint8_t		R_i, G_i, B_i;
-	R_i = R_trans[color_cnt % COLOR_VARIATION] * 255;
-	G_i = G_trans[color_cnt % COLOR_VARIATION] * 255;
-	B_i = B_trans[color_cnt % COLOR_VARIATION] * 255;
+	int color_nb = color_cnt % COLOR_VARIATION;
+	R_i = R_trans[color_nb] * 255;
+	G_i = G_trans[color_nb] * 255;
+	B_i = B_trans[color_nb] * 255;
 	color_img += (R_i & 0xFF) << 16;
 	color_img += (G_i & 0xFF) << 8;
 	color_img += (B_i & 0xFF);
+	uint8_t *img = rand_number_pic(rand_cnt);
+	// Display number on LCD
+	Draw_Image(img, color_img);
 
-	// Action depending on mode
-	if(mode == MODE_BINGO){
-		uint8_t *img = rand_number_pic(rand_cnt);
-		// Display number on LCD
-		Draw_Image(img, color_img);
+	// Update LED Strip
+	for(int k = 0; k < LED_STRIP_MIRROR_NB; k++){
+		uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_MIRROR_NB];
+		set_pix_RGB(&led_strip_mirror, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
 	}
-	else{
-		color_img -= 0xFF000000;
-		color_img += 0x88000000;
-		Draw_Bingo(color_img);
+	send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+	for(int k = 0; k < LED_STRIP_FILM_NB; k++){
+		uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_FILM_NB];
+		set_pix_RGB(&led_strip_film, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
 	}
+	send_leds(&led_strip_film, get_array(&led_array_film));
 }
 
 /**
@@ -241,6 +270,70 @@ uint8_t *rand_number_pic(uint32_t value){
 	// Random selection
 	uint32_t rd_nb = (ADC_VAL + value) % (NB_OF_SERIES * 9);
 	return imgs[rd_nb];
+}
+
+/**
+  * @brief  Start a conversion on D5 (PA_2)
+  * @retval None
+  */
+uint16_t read_adc_polling(void) {
+	uint16_t adc_value = 100;
+
+    HAL_ADC_Start(&hadc1);
+    // Waiting end of conversion
+    if (HAL_ADC_PollForConversion(&hadc1, 100) == HAL_OK) {
+        // Lecture de la valeur convertie
+    	adc_value = HAL_ADC_GetValue(&hadc1);
+    }
+
+    HAL_ADC_Stop(&hadc1);
+    return adc_value;
+}
+
+/**
+  * @brief  Action on timer
+  * @retval None
+  */
+void timer_action(void) {
+	if(mode == SMOOTH){
+		// Color selection
+		uint32_t	color_img = 0xFF000000;
+		uint8_t		R_i, G_i, B_i;
+		uint8_t		color_nb = color_cnt % COLOR_VARIATION_SMOOTH;
+		R_i = R_smooth[color_nb] * 255;
+		G_i = G_smooth[color_nb] * 255;
+		B_i = B_smooth[color_nb] * 255;
+		color_img += (R_i & 0xFF) << 16;
+		color_img += (G_i & 0xFF) << 8;
+		color_img += (B_i & 0xFF);
+		Draw_Bingo(color_img);
+
+		// Update LED Strip
+		for(int k = 0; k < LED_STRIP_MIRROR_NB; k++){
+			uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_MIRROR_NB];
+			set_pix_RGB(&led_strip_mirror, k, val*R_smooth[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
+		}
+		send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+		for(int k = 0; k < LED_STRIP_FILM_NB; k++){
+			uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_FILM_NB];
+			set_pix_RGB(&led_strip_film, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
+		}
+		send_leds(&led_strip_film, get_array(&led_array_film));
+	}
+	else{
+		if(timeout_cnt != 0){
+			timeout_cnt--;
+		}
+	}
+}
+
+/**
+  * @brief  Interrupt action on TIM2
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
+{
+    timer_action();
 }
 
 /**
@@ -335,24 +428,6 @@ static void Draw_Bingo(uint32_t color){
 }
 
 /**
-  * @brief  Start a conversion on D5 (PA_2)
-  * @retval None
-  */
-uint16_t read_adc_polling(void) {
-	uint16_t adc_value = 100;
-
-    HAL_ADC_Start(&hadc1);
-    // Waiting end of conversion
-    if (HAL_ADC_PollForConversion(&hadc1, 100) == HAL_OK) {
-        // Lecture de la valeur convertie
-    	adc_value = HAL_ADC_GetValue(&hadc1);
-    }
-
-    HAL_ADC_Stop(&hadc1);
-    return adc_value;
-}
-
-/**
   * @brief  EXT Interrupt Callback Function
   * @retval None
   */
@@ -365,6 +440,24 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
 }
 
+
+const uint8_t sine_table[LED_STRIP_MIRROR_NB] = {
+	90, 115, 150, 200, 255, 200, 150, 115,  90,  60,
+  50, 	30,  10,   5,   5,   5,   5,   5,  10,  30,
+	50,  60,
+	90, 115, 150, 200, 255, 200, 150, 115,  90,  60,
+  50, 	30,  10,   5,   5,   5,   5,   5,  10,  30,
+	50,  60,
+	90, 115, 150, 200, 255, 200, 150, 115,  90,  60,
+  50, 	30,  10,   5,   5,   5,   5,   5,  10,  30,
+	50,  60,
+	90, 115, 150, 200, 255, 200, 150, 115,  90,  60,
+  50, 	30,  10,   5,   5,   5,   5,   5,  10,  30,
+	50,  60,
+	90, 115, 150, 200, 255, 200, 150, 115,  90,  60,
+  50, 	30,  10,   5,   5,   5,   5,   5,  10,  30,
+	50,  60
+};
 
 /**
   * @brief  This function is executed in case of error occurrence.
@@ -476,7 +569,7 @@ static void MX_ADC1_Init(void)
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
@@ -487,7 +580,6 @@ static void MX_ADC1_Init(void)
   hadc1.Init.NbrOfConversion = 1;
   hadc1.Init.DMAContinuousRequests = DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-  __HAL_RCC_ADC1_CLK_ENABLE();
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
     Error_Handler();
@@ -495,9 +587,9 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_2;
+  sConfig.Channel = ADC_CHANNEL_7;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -531,7 +623,8 @@ static void MX_GPIO_Init(void)
 
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOG, LED_SW1_Pin|LED_SW2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED_M_GPIO_Port, LED_M_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED_F_GPIO_Port, LED_F_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : SYNC_Pin */
   GPIO_InitStruct.Pin = SYNC_Pin;
@@ -539,36 +632,64 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(SYNC_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : MODE_Pin */
-  GPIO_InitStruct.Pin = MODE_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(MODE_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : SYNC0_Pin SYNC_Pin */
-  GPIO_InitStruct.Pin = SYNC0_Pin|SYNC_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
-  /*Configure GPIO pin : PA2 (ADC1_IN2) */
-  GPIO_InitStruct.Pin = GPIO_PIN_2;
+  /*Configure GPIO pin : PA7 (ADC1_IN7) */
+  GPIO_InitStruct.Pin = GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LED_SW1_Pin LED_SW2_Pin */
-  GPIO_InitStruct.Pin = LED_SW1_Pin|LED_SW2_Pin;
+  /*Configure GPIO pin : LED_M_Pin */
+  GPIO_InitStruct.Pin = LED_M_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+  HAL_GPIO_Init(LED_M_GPIO_Port, &GPIO_InitStruct);
 }
 
+
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 1000;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 4294967295;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
 
 #ifdef  USE_FULL_ASSERT
 /**
