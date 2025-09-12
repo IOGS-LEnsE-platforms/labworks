@@ -48,7 +48,7 @@
 #define RGB888_BYTE_PER_PIXEL         3
 
 #define	LED_STRIP_MIRROR_NB				110
-#define	LED_STRIP_FILM_NB				50
+#define	LED_STRIP_FILM_NB				100
 
 
 #define RANDOM_ADC_Pin GPIO_PIN_7

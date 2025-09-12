@@ -15,20 +15,11 @@
   *
   ******************************************************************************
 PINOUT :
-
-D5 / PA_2		Random Analog Input (not connected)
+D9 / PA7		Random Analog Input (not connected)
 					- ADC1_IN / 28 cycles / Channel 2
-D9 / PA_7		SYNC - Interrupt In / Clk sync
-D8 / PG10	LED Strip Mirror
-D7 / PG11	LED Strip film
-
-NEW !!!
-
-D9 / PA_7		Random Analog Input (not connected)
-					- ADC1_IN / 28 cycles / Channel 2
-D14/ PB_9		SYNC - Interrupt In / Clk sync
-D8 / PG10	LED Strip Mirror
-D11/ PB15	LED Strip film
+D13/ PD3		SYNC - Interrupt In / Clk sync
+D8 / PG10		LED Strip Mirror
+D11/ PB15		LED Strip film
 
   ******************************************************************************
   */
@@ -66,6 +57,7 @@ uint8_t* imgs[] = { &im1_1, &im2_1, &im3_1, &im4_1, &im5_1, &im6_1, &im7_1, &im8
 void init_MCU(void);
 void init_LCD(void);
 void init_strips(void);
+void test_strips(void);
 
 void sync_action(void);
 void timer_action(void);
@@ -99,6 +91,7 @@ int main(void)
 	init_MCU();
 	init_LCD();
 	init_strips();
+
 	timeout_cnt = 0;
 	mode = SMOOTH;
 
@@ -107,25 +100,13 @@ int main(void)
 	/* Infinite loop */
 	while (1)
 	{
-		/*
+
+		__NOP();
+		__NOP();
 		sync_action();
-		for(k = 0; k < 10000000; k++)
-			__NOP();
-		//break_trame(&led_strip_mirror);
-		set_all_RGB(&led_array_mirror, 255, 0, 128);
-		send_leds(&led_strip_mirror, get_array(&led_array_mirror));
-		//break_trame(&led_strip_film);
-		set_all_RGB(&led_array_film, 128, 0, 0);
-		send_leds(&led_strip_film, get_array(&led_array_film));
-		for(k = 0; k < 10000000; k++)
-			__NOP();
-		//break_trame(&led_strip_mirror);
-		set_all_RGB(&led_array_mirror, 0, 128, 0);
-		send_leds(&led_strip_mirror, get_array(&led_array_mirror));
-		//break_trame(&led_strip_film);
-		set_all_RGB(&led_array_film, 0, 128, 128);
-		send_leds(&led_strip_film, get_array(&led_array_film));
-		*/
+
+		/*
+		test_strips();
 		__NOP();
 		__NOP();
 		if((timeout_cnt == 0) && (mode == BINGO)){
@@ -134,6 +115,7 @@ int main(void)
 			// Draw LEnsE Logo (Orange)
 			Draw_LEnsE();
 		}
+		*/
   }
 }
 
@@ -224,6 +206,30 @@ void init_strips(void){
 }
 
 /**
+  * @brief  Test the LED strips.
+  * @retval None
+  */
+void test_strips(void){
+	int k;
+	for(k = 0; k < 10000000; k++)
+		__NOP();
+	//break_trame(&led_strip_mirror);
+	set_all_RGB(&led_array_mirror, 92, 0, 48);
+	send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+	//break_trame(&led_strip_film);
+	set_all_RGB(&led_array_film, 128, 0, 0);
+	send_leds(&led_strip_film, get_array(&led_array_film));
+	for(k = 0; k < 10000000; k++)
+		__NOP();
+	//break_trame(&led_strip_mirror);
+	set_all_RGB(&led_array_mirror, 0, 128, 0);
+	send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+	//break_trame(&led_strip_film);
+	set_all_RGB(&led_array_film, 0, 64, 64);
+	send_leds(&led_strip_film, get_array(&led_array_film));
+}
+
+/**
   * @brief  Callback function on CLK SYNC input.
   * @retval None
   */
@@ -232,11 +238,10 @@ void sync_action(void){
 	color_cnt++;
 	mode = BINGO;
 	timeout_cnt = TIMEOUT_MAX;
-
 	// Color selection
+	int color_nb = color_cnt % COLOR_VARIATION;
 	uint32_t	color_img = 0xFF000000;
 	uint8_t		R_i, G_i, B_i;
-	int color_nb = color_cnt % COLOR_VARIATION;
 	R_i = R_trans[color_nb] * 255;
 	G_i = G_trans[color_nb] * 255;
 	B_i = B_trans[color_nb] * 255;
@@ -244,18 +249,21 @@ void sync_action(void){
 	color_img += (G_i & 0xFF) << 8;
 	color_img += (B_i & 0xFF);
 	uint8_t *img = rand_number_pic(rand_cnt);
+	/*
 	// Display number on LCD
 	Draw_Image(img, color_img);
+	*/
 
 	// Update LED Strip
+	//set_all_RGB(&led_array_mirror, 128*R_trans[color_nb], 0, 0);
 	for(int k = 0; k < LED_STRIP_MIRROR_NB; k++){
 		uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_MIRROR_NB];
-		set_pix_RGB(&led_strip_mirror, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
+		set_pix_RGB(&led_array_mirror, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
 	}
 	send_leds(&led_strip_mirror, get_array(&led_array_mirror));
 	for(int k = 0; k < LED_STRIP_FILM_NB; k++){
 		uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_FILM_NB];
-		set_pix_RGB(&led_strip_film, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
+		set_pix_RGB(&led_array_film, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
 	}
 	send_leds(&led_strip_film, get_array(&led_array_film));
 }
@@ -285,7 +293,6 @@ uint16_t read_adc_polling(void) {
         // Lecture de la valeur convertie
     	adc_value = HAL_ADC_GetValue(&hadc1);
     }
-
     HAL_ADC_Stop(&hadc1);
     return adc_value;
 }
@@ -580,6 +587,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.NbrOfConversion = 1;
   hadc1.Init.DMAContinuousRequests = DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  __HAL_RCC_ADC1_CLK_ENABLE();
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
     Error_Handler();
@@ -589,7 +597,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_7;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -648,6 +656,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_M_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LED_F_Pin */
+  GPIO_InitStruct.Pin = LED_F_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_F_GPIO_Port, &GPIO_InitStruct);
 }
 
 
