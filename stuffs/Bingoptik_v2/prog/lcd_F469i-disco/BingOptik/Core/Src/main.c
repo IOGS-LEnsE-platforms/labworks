@@ -89,8 +89,8 @@ int main(void)
 {
 	int k;
 	init_MCU();
-	init_LCD();
-	init_strips();
+	//init_LCD();
+	//init_strips();
 
 	timeout_cnt = 0;
 	mode = SMOOTH;
@@ -101,6 +101,8 @@ int main(void)
 	while (1)
 	{
 		__NOP();
+		//HAL_GPIO_TogglePin(LED_M_GPIO_Port, LED_M_Pin);
+		/*
 		if(mode == BINGO){
 			// Color selection
 			int color_nb = color_cnt % COLOR_VARIATION;
@@ -117,15 +119,16 @@ int main(void)
 			// Display number on LCD
 			Draw_Image(img, color_img);
 		}
+		*/
 		/*
 		test_strips();
-		*/
 		if((timeout_cnt == 0) && (mode == BINGO)){
 			BSP_LCD_Clear(LCD_COLOR_BLACK);
 			mode = SMOOTH;
 			// Draw LEnsE Logo (Orange)
 			Draw_LEnsE();
 		}
+		*/
   }
 }
 
@@ -149,11 +152,11 @@ void init_MCU(void){
 	SystemClock_Config();
 
 	/* Configure LED1 and LED3 */
-	BSP_LED_Init(LED1);
-	BSP_LED_Init(LED3);
+	//BSP_LED_Init(LED1);
+	//BSP_LED_Init(LED3);
 
 	MX_GPIO_Init();
-	MX_ADC1_Init();
+	//MX_ADC1_Init();
 	MX_TIM2_Init();
 	HAL_TIM_Base_Start_IT(&htim2);
 }
@@ -271,12 +274,12 @@ void sync_action(void){
 		uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_MIRROR_NB];
 		set_pix_RGB(&led_array_mirror, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
 	}
-	send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+	//send_leds(&led_strip_mirror, get_array(&led_array_mirror));
 	for(int k = 0; k < LED_STRIP_FILM_NB; k++){
 		uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_FILM_NB];
 		set_pix_RGB(&led_array_film, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
 	}
-	send_leds(&led_strip_film, get_array(&led_array_film));
+	//send_leds(&led_strip_film, get_array(&led_array_film));
 }
 
 /**
@@ -313,6 +316,7 @@ uint16_t read_adc_polling(void) {
   * @retval None
   */
 void timer_action(void) {
+	/*
 	if(mode == SMOOTH){
 		// Color selection
 		uint32_t	color_img = 0xFF000000;
@@ -341,11 +345,14 @@ void timer_action(void) {
 	else{
 		if(timeout_cnt != 0){
 			timeout_cnt--;
+			blackout(&led_strip_film);
 		}
 		else{
 			mode = SMOOTH;
 		}
 	}
+	*/
+	HAL_GPIO_TogglePin(LED_M_GPIO_Port, LED_M_Pin);
 }
 
 /**
@@ -354,7 +361,9 @@ void timer_action(void) {
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 {
-    timer_action();
+	HAL_GPIO_TogglePin(LED_M_GPIO_Port, LED_M_Pin);
+	//timer_action();
+    //mode = SMOOTH;
 }
 
 /**
@@ -456,7 +465,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if(GPIO_Pin == SYNC_Pin) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
-    	mode = BINGO;
+    	mode = SMOOTH;
     	sync_action();
     }
 }
@@ -494,6 +503,7 @@ static void Error_Handler(void)
   }
 }
 
+
 /**
   * @brief  System Clock Configuration
   *         The system Clock is configured as follow :
@@ -517,8 +527,8 @@ static void Error_Handler(void)
   */
 static void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
+	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   HAL_StatusTypeDef ret = HAL_OK;
 
   /* Enable Power Control clock */
@@ -655,8 +665,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(SYNC_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+  //HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+  //HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
   /*Configure GPIO pin : PA7 (ADC1_IN7) */
   GPIO_InitStruct.Pin = GPIO_PIN_7;
@@ -680,6 +690,11 @@ static void MX_GPIO_Init(void)
 }
 
 
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_TIM2_Init(void)
 {
 
@@ -694,10 +709,10 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 1000;
+  htim2.Init.Prescaler = 100;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.Period = 100;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV2;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
   {
