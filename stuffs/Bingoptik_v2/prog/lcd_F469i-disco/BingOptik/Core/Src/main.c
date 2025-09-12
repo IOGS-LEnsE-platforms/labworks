@@ -100,22 +100,32 @@ int main(void)
 	/* Infinite loop */
 	while (1)
 	{
-
 		__NOP();
-		__NOP();
-		sync_action();
+		if(mode == BINGO){
+			// Color selection
+			int color_nb = color_cnt % COLOR_VARIATION;
+			uint32_t	color_img = 0xFF000000;
+			uint8_t		R_i, G_i, B_i;
+			R_i = R_trans[color_nb] * 255;
+			G_i = G_trans[color_nb] * 255;
+			B_i = B_trans[color_nb] * 255;
+			color_img += (R_i & 0xFF) << 16;
+			color_img += (G_i & 0xFF) << 8;
+			color_img += (B_i & 0xFF);
+			uint8_t *img = rand_number_pic(rand_cnt);
 
+			// Display number on LCD
+			Draw_Image(img, color_img);
+		}
 		/*
 		test_strips();
-		__NOP();
-		__NOP();
+		*/
 		if((timeout_cnt == 0) && (mode == BINGO)){
 			BSP_LCD_Clear(LCD_COLOR_BLACK);
 			mode = SMOOTH;
 			// Draw LEnsE Logo (Orange)
 			Draw_LEnsE();
 		}
-		*/
   }
 }
 
@@ -240,6 +250,7 @@ void sync_action(void){
 	timeout_cnt = TIMEOUT_MAX;
 	// Color selection
 	int color_nb = color_cnt % COLOR_VARIATION;
+	/*
 	uint32_t	color_img = 0xFF000000;
 	uint8_t		R_i, G_i, B_i;
 	R_i = R_trans[color_nb] * 255;
@@ -249,10 +260,10 @@ void sync_action(void){
 	color_img += (G_i & 0xFF) << 8;
 	color_img += (B_i & 0xFF);
 	uint8_t *img = rand_number_pic(rand_cnt);
-	/*
 	// Display number on LCD
 	Draw_Image(img, color_img);
 	*/
+
 
 	// Update LED Strip
 	//set_all_RGB(&led_array_mirror, 128*R_trans[color_nb], 0, 0);
@@ -330,6 +341,9 @@ void timer_action(void) {
 	else{
 		if(timeout_cnt != 0){
 			timeout_cnt--;
+		}
+		else{
+			mode = SMOOTH;
 		}
 	}
 }
