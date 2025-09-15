@@ -89,8 +89,8 @@ int main(void)
 {
 	int k;
 	init_MCU();
-	//init_LCD();
-	//init_strips();
+	init_LCD();
+	init_strips();
 
 	timeout_cnt = 0;
 	mode = SMOOTH;
@@ -274,12 +274,12 @@ void sync_action(void){
 		uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_MIRROR_NB];
 		set_pix_RGB(&led_array_mirror, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
 	}
-	//send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+	send_leds(&led_strip_mirror, get_array(&led_array_mirror));
 	for(int k = 0; k < LED_STRIP_FILM_NB; k++){
 		uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_FILM_NB];
 		set_pix_RGB(&led_array_film, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
 	}
-	//send_leds(&led_strip_film, get_array(&led_array_film));
+	send_leds(&led_strip_film, get_array(&led_array_film));
 }
 
 /**
@@ -352,7 +352,8 @@ void timer_action(void) {
 		}
 	}
 	*/
-	HAL_GPIO_TogglePin(LED_M_GPIO_Port, LED_M_Pin);
+	//HAL_GPIO_TogglePin(LED_M_GPIO_Port, LED_M_Pin);
+	__NOP();
 }
 
 /**
@@ -361,9 +362,9 @@ void timer_action(void) {
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 {
-	HAL_GPIO_TogglePin(LED_M_GPIO_Port, LED_M_Pin);
-	//timer_action();
-    //mode = SMOOTH;
+    if (htim->Instance == TIM2) {
+        timer_action();
+    }
 }
 
 /**
@@ -665,8 +666,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(SYNC_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  //HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-  //HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
   /*Configure GPIO pin : PA7 (ADC1_IN7) */
   GPIO_InitStruct.Pin = GPIO_PIN_7;
@@ -709,7 +710,7 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 100;
+  htim2.Init.Prescaler = 1000;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 100;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV2;
