@@ -34,13 +34,17 @@ D11/ PB15		LED Strip film
 
 /* Private define ------------------------------------------------------------*/
 #define			NB_OF_SERIES		1
-#define			TIMEOUT_MAX			1000
+#define			TIMEOUT_MAX			1000		// * 30 ms = 30 s
+#define			TIMEOUT_MVT			10			// * 30 ms = 0.3 s
+#define			TIMEOUT_SMOOTH		20			// * 30 ms = 0.3 s
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
 TIM_HandleTypeDef htim2;
 
 uint32_t	timeout_cnt;
+uint8_t		timeout_mvt;
+uint8_t		timeout_smooth;
 
 uint32_t	rand_cnt;
 uint8_t		color_cnt;	// 60 different colors from L432KC - SYNC and SYNC0 inputs
@@ -60,7 +64,6 @@ void init_strips(void);
 void test_strips(void);
 
 void sync_action(void);
-void timer_action(void);
 
 uint8_t *rand_number_pic(uint32_t value);
 uint16_t read_adc_polling(void);
@@ -87,48 +90,102 @@ static void MX_TIM2_Init(void);
   */
 int main(void)
 {
+	uint8_t 	*img;
+	uint32_t	color_img;
 	int k;
 	init_MCU();
-	init_LCD();
 	init_strips();
+	init_LCD();
 
 	timeout_cnt = 0;
+	timeout_mvt = 0;
+	timeout_smooth = 0;
 	mode = SMOOTH;
-
 
 	/* START !! */
 	/* Infinite loop */
 	while (1)
 	{
 		__NOP();
-		//HAL_GPIO_TogglePin(LED_M_GPIO_Port, LED_M_Pin);
-		/*
 		if(mode == BINGO){
 			// Color selection
 			int color_nb = color_cnt % COLOR_VARIATION;
-			uint32_t	color_img = 0xFF000000;
 			uint8_t		R_i, G_i, B_i;
+			color_img = 0xFF000000;
 			R_i = R_trans[color_nb] * 255;
 			G_i = G_trans[color_nb] * 255;
 			B_i = B_trans[color_nb] * 255;
 			color_img += (R_i & 0xFF) << 16;
 			color_img += (G_i & 0xFF) << 8;
 			color_img += (B_i & 0xFF);
-			uint8_t *img = rand_number_pic(rand_cnt);
+			if(timeout_mvt !=0){
+				img = rand_number_pic(rand_cnt);
+				// Display number on LCD
+				Draw_Image(img, color_img);
+			}
+			else{
+				if(timeout_cnt != 0){
+					color_img = 0xFFAAAAAA;
+					Draw_Image(img, color_img);
 
-			// Display number on LCD
-			Draw_Image(img, color_img);
+
+					float gain = (float)timeout_cnt / TIMEOUT_MAX;
+					// Update LED Strip
+					for(int k = 0; k < LED_STRIP_MIRROR_NB; k++){
+						uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_MIRROR_NB] * gain;
+						set_pix_RGB(&led_array_mirror, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
+					}
+					send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+					for(int k = 0; k < LED_STRIP_FILM_NB; k++){
+						uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_FILM_NB] * gain;
+						set_pix_RGB(&led_array_film, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
+					}
+					send_leds(&led_strip_film, get_array(&led_array_film));
+
+				}
+			}
+
 		}
-		*/
-		/*
-		test_strips();
+		else{
+			// MODE SMOOTH
+			if(timeout_smooth == 0){
+		        color_cnt++;
+				timeout_smooth = TIMEOUT_SMOOTH;
+
+				uint32_t	color_img = 0xFF000000;
+				float		R_i, G_i, B_i;
+				uint16_t 	color_nb = color_cnt % COLOR_VARIATION_SMOOTH;
+				R_i = R_smooth[color_nb];
+				G_i = G_smooth[color_nb];
+				B_i = B_smooth[color_nb];
+				color_img += ((int)(R_i * 255) & 0xFF) << 16;
+				color_img += ((int)(G_i * 255) & 0xFF) << 8;
+				color_img += ((int)(B_i * 255) & 0xFF);
+				Draw_Bingo(color_img);
+
+				// Update LED Strip
+				for(int k = LED_STRIP_MIRROR_NB; k >= 0; k--){
+					uint8_t val = smooth_table[(k+color_cnt)%LED_STRIP_MIRROR_NB] / 4;
+					set_pix_RGB(&led_array_mirror, LED_STRIP_MIRROR_NB-k, val*R_i, val*G_i, val*B_i);
+				}
+				send_leds(&led_strip_mirror, get_array(&led_array_mirror));
+				for(int k = 0; k < LED_STRIP_FILM_NB; k++){
+					uint8_t val = smooth_table[(k+color_cnt)%LED_STRIP_FILM_NB] / 4;
+					set_pix_RGB(&led_array_film, k, val*R_i, val*G_i, val*B_i);
+				}
+				send_leds(&led_strip_film, get_array(&led_array_film));
+
+				//HAL_GPIO_TogglePin(LED_M_GPIO_Port, LED_M_Pin);
+			}
+		}
+
+		//test_strips();
 		if((timeout_cnt == 0) && (mode == BINGO)){
 			BSP_LCD_Clear(LCD_COLOR_BLACK);
 			mode = SMOOTH;
 			// Draw LEnsE Logo (Orange)
 			Draw_LEnsE();
 		}
-		*/
   }
 }
 
@@ -156,7 +213,7 @@ void init_MCU(void){
 	//BSP_LED_Init(LED3);
 
 	MX_GPIO_Init();
-	//MX_ADC1_Init();
+	MX_ADC1_Init();
 	MX_TIM2_Init();
 	HAL_TIM_Base_Start_IT(&htim2);
 }
@@ -253,26 +310,11 @@ void sync_action(void){
 	timeout_cnt = TIMEOUT_MAX;
 	// Color selection
 	int color_nb = color_cnt % COLOR_VARIATION;
-	/*
-	uint32_t	color_img = 0xFF000000;
-	uint8_t		R_i, G_i, B_i;
-	R_i = R_trans[color_nb] * 255;
-	G_i = G_trans[color_nb] * 255;
-	B_i = B_trans[color_nb] * 255;
-	color_img += (R_i & 0xFF) << 16;
-	color_img += (G_i & 0xFF) << 8;
-	color_img += (B_i & 0xFF);
-	uint8_t *img = rand_number_pic(rand_cnt);
-	// Display number on LCD
-	Draw_Image(img, color_img);
-	*/
-
 
 	// Update LED Strip
-	//set_all_RGB(&led_array_mirror, 128*R_trans[color_nb], 0, 0);
 	for(int k = 0; k < LED_STRIP_MIRROR_NB; k++){
 		uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_MIRROR_NB];
-		set_pix_RGB(&led_array_mirror, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
+		set_pix_RGB(&led_array_mirror, LED_STRIP_MIRROR_NB-k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
 	}
 	send_leds(&led_strip_mirror, get_array(&led_array_mirror));
 	for(int k = 0; k < LED_STRIP_FILM_NB; k++){
@@ -312,58 +354,15 @@ uint16_t read_adc_polling(void) {
 }
 
 /**
-  * @brief  Action on timer
-  * @retval None
-  */
-void timer_action(void) {
-	/*
-	if(mode == SMOOTH){
-		// Color selection
-		uint32_t	color_img = 0xFF000000;
-		uint8_t		R_i, G_i, B_i;
-		uint8_t		color_nb = color_cnt % COLOR_VARIATION_SMOOTH;
-		R_i = R_smooth[color_nb] * 255;
-		G_i = G_smooth[color_nb] * 255;
-		B_i = B_smooth[color_nb] * 255;
-		color_img += (R_i & 0xFF) << 16;
-		color_img += (G_i & 0xFF) << 8;
-		color_img += (B_i & 0xFF);
-		Draw_Bingo(color_img);
-
-		// Update LED Strip
-		for(int k = 0; k < LED_STRIP_MIRROR_NB; k++){
-			uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_MIRROR_NB];
-			set_pix_RGB(&led_strip_mirror, k, val*R_smooth[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
-		}
-		send_leds(&led_strip_mirror, get_array(&led_array_mirror));
-		for(int k = 0; k < LED_STRIP_FILM_NB; k++){
-			uint8_t val = sine_table[(k+2*color_cnt)%LED_STRIP_FILM_NB];
-			set_pix_RGB(&led_strip_film, k, val*R_trans[color_nb], val*G_trans[color_nb], val*B_trans[color_nb]);
-		}
-		send_leds(&led_strip_film, get_array(&led_array_film));
-	}
-	else{
-		if(timeout_cnt != 0){
-			timeout_cnt--;
-			blackout(&led_strip_film);
-		}
-		else{
-			mode = SMOOTH;
-		}
-	}
-	*/
-	//HAL_GPIO_TogglePin(LED_M_GPIO_Port, LED_M_Pin);
-	__NOP();
-}
-
-/**
   * @brief  Interrupt action on TIM2
   * @retval None
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 {
     if (htim->Instance == TIM2) {
-        timer_action();
+    	if(timeout_mvt != 0)	timeout_mvt--;
+    	if(timeout_cnt != 0)	timeout_cnt--;
+    	if(timeout_smooth != 0)	timeout_smooth--;
     }
 }
 
@@ -466,7 +465,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if(GPIO_Pin == SYNC_Pin) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
-    	mode = SMOOTH;
+    	mode = BINGO;
+    	timeout_mvt = TIMEOUT_MVT;
     	sync_action();
     }
 }
@@ -489,6 +489,20 @@ const uint8_t sine_table[LED_STRIP_MIRROR_NB] = {
   50, 	30,  10,   5,   5,   5,   5,   5,  10,  30,
 	50,  60
 };
+
+const uint8_t smooth_table[LED_STRIP_MIRROR_NB] = {
+	255, 255, 	0, 	0, 255, 255, 	0, 	0,  255, 255, 0, 	0,
+	255, 255, 	0, 	0, 255, 255, 	0, 	0,  255, 255, 0, 	0,
+	255, 255, 	0, 	0, 255, 255, 	0, 	0,  255, 255, 0, 	0,
+	255, 255, 	0, 	0, 255, 255, 	0, 	0,  255, 255, 0, 	0,
+	255, 255, 	0, 	0, 255, 255, 	0, 	0,  255, 255, 0, 	0,
+	255, 255, 	0, 	0, 255, 255, 	0, 	0,  255, 255, 0, 	0,
+	255, 255, 	0, 	0, 255, 255, 	0, 	0,  255, 255, 0, 	0,
+	255, 255, 	0, 	0, 255, 255, 	0, 	0,  255, 255, 0, 	0,
+	255, 255, 	0, 	0, 255, 255, 	0, 	0,  255, 255, 0, 	0,
+	255, 255
+};
+
 
 /**
   * @brief  This function is executed in case of error occurrence.
@@ -710,9 +724,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 1000;
+  htim2.Init.Prescaler = 3000;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 100;
+  htim2.Init.Period = 1000;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV2;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)

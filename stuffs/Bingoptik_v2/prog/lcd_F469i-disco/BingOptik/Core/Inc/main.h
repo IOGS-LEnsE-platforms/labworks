@@ -87,5 +87,6 @@ uint8_t  TouchScreen_IsCalibrationDone(void);
 
 /* Sine Wave */
 extern const uint8_t sine_table[LED_STRIP_MIRROR_NB];
+extern const uint8_t smooth_table[LED_STRIP_MIRROR_NB];
 
 #endif /* __MAIN_H */
