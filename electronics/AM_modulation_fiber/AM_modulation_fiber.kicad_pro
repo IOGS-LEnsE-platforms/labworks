@@ -508,7 +508,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "Regul_gerber/",
+      "plot": "AM_fiber_gerber/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
