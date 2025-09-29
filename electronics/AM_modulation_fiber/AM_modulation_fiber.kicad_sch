@@ -3330,6 +3330,16 @@
 	)
 	(wire
 		(pts
+			(xy 93.98 39.37) (xy 96.52 39.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "748d8ff8-2df8-4fcc-a701-363308507409")
+	)
+	(wire
+		(pts
 			(xy 156.21 69.85) (xy 154.94 69.85)
 		)
 		(stroke
@@ -3557,6 +3567,16 @@
 			(type default)
 		)
 		(uuid "a0357345-822f-4bf6-a9f6-b48cb7b29a1c")
+	)
+	(wire
+		(pts
+			(xy 93.98 36.83) (xy 96.52 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a123a595-a565-4ae3-b3d3-324264013ead")
 	)
 	(wire
 		(pts
@@ -3847,6 +3867,16 @@
 			(type default)
 		)
 		(uuid "d2b3f531-45ba-4c03-a2a7-d9f57d21f7bd")
+	)
+	(wire
+		(pts
+			(xy 93.98 34.29) (xy 96.52 34.29)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d4d2f67b-e7c5-4d28-bacc-7b1578a2630c")
 	)
 	(wire
 		(pts
@@ -4408,6 +4438,28 @@
 			)
 		)
 	)
+	(global_label "OUT_LED"
+		(shape input)
+		(at 93.98 39.37 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "87b56a3b-e164-4465-93aa-04d60a268f83")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 82.9515 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "IN_2"
 		(shape input)
 		(at 30.48 69.85 180)
@@ -4540,6 +4592,28 @@
 			)
 		)
 	)
+	(global_label "VCC+"
+		(shape input)
+		(at 93.98 36.83 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "edaf556c-66f5-4273-9ca0-cd86a3d7cae9")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 85.7938 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(symbol
 		(lib_id "power:GND")
 		(at 129.54 78.74 0)
@@ -4601,6 +4675,79 @@
 			(project "AM_modulation_fiber"
 				(path "/321de10e-4c5a-4709-a860-0ca07d993626"
 					(reference "#PWR06")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x03")
+		(at 101.6 36.83 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "050f2068-594c-4a82-9616-c1b9438b0d16")
+		(property "Reference" "J9"
+			(at 104.14 35.5599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Mod_In"
+			(at 104.14 38.0999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
+			(at 101.6 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 101.6 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 101.6 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1f98c2cc-af35-4881-be4c-99754c601c32")
+		)
+		(pin "3"
+			(uuid "808d8a01-b59a-4dba-869f-2598810e8e07")
+		)
+		(pin "2"
+			(uuid "9f9f935b-2b3d-4a21-96b8-8232de124ee4")
+		)
+		(instances
+			(project "AM_modulation_fiber"
+				(path "/321de10e-4c5a-4709-a860-0ca07d993626"
+					(reference "J9")
 					(unit 1)
 				)
 			)
@@ -4837,7 +4984,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_THT:CP_Radial_D8.0mm_P5.00mm"
+		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
 			(at 53.0352 31.75 0)
 			(effects
 				(font
@@ -7693,7 +7840,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_THT:C_Rect_L4.6mm_W3.8mm_P2.50mm_MKS02_FKP02"
+		(property "Footprint" "Capacitor_THT:C_Rect_L7.0mm_W4.5mm_P5.00mm"
 			(at 142.24 63.8048 0)
 			(effects
 				(font
@@ -7899,7 +8046,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_THT:CP_Radial_D8.0mm_P5.00mm"
+		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
 			(at 53.0352 21.59 0)
 			(effects
 				(font
@@ -8041,6 +8188,72 @@
 				(path "/321de10e-4c5a-4709-a860-0ca07d993626"
 					(reference "U4")
 					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 93.98 34.29 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b4dfffc7-6b37-4748-a5ff-f8a0fe6f3582")
+		(property "Reference" "#PWR018"
+			(at 87.63 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 88.9 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 93.98 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 93.98 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 93.98 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5a77b2ed-ff55-41dd-b73f-61b7e07d8764")
+		)
+		(instances
+			(project "AM_modulation_fiber"
+				(path "/321de10e-4c5a-4709-a860-0ca07d993626"
+					(reference "#PWR018")
+					(unit 1)
 				)
 			)
 		)
