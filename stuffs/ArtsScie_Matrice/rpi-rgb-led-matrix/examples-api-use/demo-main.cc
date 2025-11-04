@@ -1,0 +1,753 @@
+// -*- mode: c++; c-basic-offset: 2; indent-tabs-mode: nil; -*-
+//
+// This code is public domain
+// (but note, once linked against the led-matrix library, this is
+// covered by the GPL v2)
+//
+// This is a grab-bag of various demos and not very readable.
+#include "led-matrix.h"
+#include "threaded-canvas-manipulator.h"
+#include "transformer.h"
+#include "graphics.h"
+
+#include <assert.h>
+#include <getopt.h>
+#include <limits.h>
+#include <math.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#include <algorithm>
+
+#include <string.h>
+#include <iostream>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+#define TAILLE 6144 //32*32*6
+#define LONGUEUR 96 //32*3
+#define HAUTEUR 64 //32*2
+
+using std::min;
+using std::max;
+
+#define TERM_ERR  "\033[1;31m"
+#define TERM_NORM "\033[0m"
+
+using namespace rgb_matrix;
+
+volatile bool interrupt_received = false;
+static void InterruptHandler(int signo)
+{
+    interrupt_received = true;
+}
+
+/*
+ * The following are demo image generators. They all use the utility
+ * class ThreadedCanvasManipulator to generate new frames.
+ */
+
+// Simple class that generates a rotating block on the screen.
+class RotatingBlockGenerator : public ThreadedCanvasManipulator
+{
+public:
+    RotatingBlockGenerator(Canvas *m) : ThreadedCanvasManipulator(m) {}
+
+    uint8_t scale_col(int val, int lo, int hi)
+    {
+        if (val < lo) return 0;
+        if (val > hi) return 255;
+        return 255 * (val - lo) / (hi - lo);
+    }
+
+    void Run()
+    {
+        const int cent_x = canvas()->width() / 2;
+        const int cent_y = canvas()->height() / 2;
+
+        // The square to rotate (inner square + black frame) needs to cover the
+        // whole area, even if diagnoal. Thus, when rotating, the outer pixels from
+        // the previous frame are cleared.
+        const int rotate_square = min(canvas()->width(), canvas()->height()) * 1.41;
+        const int min_rotate = cent_x - rotate_square / 2;
+        const int max_rotate = cent_x + rotate_square / 2;
+
+        // The square to display is within the visible area.
+        const int display_square = min(canvas()->width(), canvas()->height()) * 0.7;
+        const int min_display = cent_x - display_square / 2;
+        const int max_display = cent_x + display_square / 2;
+
+        const float deg_to_rad = 2 * 3.14159265 / 360;
+        int rotation = 0;
+        while (running() && !interrupt_received)
+        {
+            ++rotation;
+            usleep(15 * 1000);
+            rotation %= 360;
+            for (int x = min_rotate; x < max_rotate; ++x)
+            {
+                for (int y = min_rotate; y < max_rotate; ++y)
+                {
+                    float rot_x, rot_y;
+                    Rotate(x - cent_x, y - cent_x,
+                           deg_to_rad * rotation, &rot_x, &rot_y);
+                    if (x >= min_display && x < max_display &&
+                            y >= min_display && y < max_display)   // within display square
+                    {
+                        canvas()->SetPixel(rot_x + cent_x, rot_y + cent_y,
+                                           scale_col(x, min_display, max_display),
+                                           255 - scale_col(y, min_display, max_display),
+                                           scale_col(y, min_display, max_display));
+                    }
+                    else
+                    {
+                        // black frame.
+                        canvas()->SetPixel(rot_x + cent_x, rot_y + cent_y, 0, 0, 0);
+                    }
+                }
+            }
+        }
+    }
+
+private:
+    void Rotate(int x, int y, float angle,
+                float *new_x, float *new_y)
+    {
+        *new_x = x * cosf(angle) - y * sinf(angle);
+        *new_y = x * sinf(angle) + y * cosf(angle);
+    }
+};
+
+// Abelian sandpile
+// Contributed by: Vliedel
+class Sandpile : public ThreadedCanvasManipulator
+{
+public:
+    Sandpile(Canvas *m, int delay_ms=50)
+        : ThreadedCanvasManipulator(m), delay_ms_(delay_ms)
+    {
+        width_ = canvas()->width() - 1; // We need an odd width
+        height_ = canvas()->height() - 1; // We need an odd height
+
+        // Allocate memory
+        values_ = new int*[width_];
+        for (int x=0; x<width_; ++x)
+        {
+            values_[x] = new int[height_];
+        }
+        newValues_ = new int*[width_];
+        for (int x=0; x<width_; ++x)
+        {
+            newValues_[x] = new int[height_];
+        }
+
+        // Init values
+        srand(time(NULL));
+        for (int x=0; x<width_; ++x)
+        {
+            for (int y=0; y<height_; ++y)
+            {
+                values_[x][y] = 0;
+            }
+        }
+    }
+
+    ~Sandpile()
+    {
+        for (int x=0; x<width_; ++x)
+        {
+            delete [] values_[x];
+        }
+        delete [] values_;
+        for (int x=0; x<width_; ++x)
+        {
+            delete [] newValues_[x];
+        }
+        delete [] newValues_;
+    }
+
+    void Run()
+    {
+        while (running() && !interrupt_received)
+        {
+            // Drop a sand grain in the centre
+            values_[width_/2][height_/2]++;
+            updateValues();
+
+            for (int x=0; x<width_; ++x)
+            {
+                for (int y=0; y<height_; ++y)
+                {
+                    switch (values_[x][y])
+                    {
+                    case 0:
+                        canvas()->SetPixel(x, y, 0, 0, 0);
+                        break;
+                    case 1:
+                        canvas()->SetPixel(x, y, 0, 0, 200);
+                        break;
+                    case 2:
+                        canvas()->SetPixel(x, y, 0, 200, 0);
+                        break;
+                    case 3:
+                        canvas()->SetPixel(x, y, 150, 100, 0);
+                        break;
+                    default:
+                        canvas()->SetPixel(x, y, 200, 0, 0);
+                    }
+                }
+            }
+            usleep(delay_ms_ * 1000); // ms
+        }
+    }
+
+private:
+    void updateValues()
+    {
+        // Copy values to newValues
+        for (int x=0; x<width_; ++x)
+        {
+            for (int y=0; y<height_; ++y)
+            {
+                newValues_[x][y] = values_[x][y];
+            }
+        }
+
+        // Update newValues based on values
+        for (int x=0; x<width_; ++x)
+        {
+            for (int y=0; y<height_; ++y)
+            {
+                if (values_[x][y] > 3)
+                {
+                    // Collapse
+                    if (x>0)
+                        newValues_[x-1][y]++;
+                    if (x<width_-1)
+                        newValues_[x+1][y]++;
+                    if (y>0)
+                        newValues_[x][y-1]++;
+                    if (y<height_-1)
+                        newValues_[x][y+1]++;
+                    newValues_[x][y] -= 4;
+                }
+            }
+        }
+        // Copy newValues to values
+        for (int x=0; x<width_; ++x)
+        {
+            for (int y=0; y<height_; ++y)
+            {
+                values_[x][y] = newValues_[x][y];
+            }
+        }
+    }
+
+    int width_;
+    int height_;
+    int** values_;
+    int** newValues_;
+    int delay_ms_;
+};
+
+
+// Conway's game of life
+// Contributed by: Vliedel
+class GameLife : public ThreadedCanvasManipulator
+{
+public:
+    GameLife(Canvas *m, int delay_ms=500, bool torus=true)
+        : ThreadedCanvasManipulator(m), delay_ms_(delay_ms), torus_(torus)
+    {
+        width_ = canvas()->width();
+        height_ = canvas()->height();
+
+        // Allocate memory
+        values_ = new int*[width_];
+        for (int x=0; x<width_; ++x)
+        {
+            values_[x] = new int[height_];
+        }
+        newValues_ = new int*[width_];
+        for (int x=0; x<width_; ++x)
+        {
+            newValues_[x] = new int[height_];
+        }
+
+        // Init values randomly
+        srand(time(NULL));
+        for (int x=0; x<width_; ++x)
+        {
+            for (int y=0; y<height_; ++y)
+            {
+                values_[x][y]=rand()%2;
+            }
+        }
+        r_ = rand()%255;
+        g_ = rand()%255;
+        b_ = rand()%255;
+
+        if (r_<150 && g_<150 && b_<150)
+        {
+            int c = rand()%3;
+            switch (c)
+            {
+            case 0:
+                r_ = 200;
+                break;
+            case 1:
+                g_ = 200;
+                break;
+            case 2:
+                b_ = 200;
+                break;
+            }
+        }
+    }
+
+    ~GameLife()
+    {
+        for (int x=0; x<width_; ++x)
+        {
+            delete [] values_[x];
+        }
+        delete [] values_;
+        for (int x=0; x<width_; ++x)
+        {
+            delete [] newValues_[x];
+        }
+        delete [] newValues_;
+    }
+
+    void Run()
+    {
+        while (running() && !interrupt_received)
+        {
+
+            updateValues();
+
+            for (int x=0; x<width_; ++x)
+            {
+                for (int y=0; y<height_; ++y)
+                {
+                    if (values_[x][y])
+                        canvas()->SetPixel(x, y, r_, g_, b_);
+                    else
+                        canvas()->SetPixel(x, y, 0, 0, 0);
+                }
+            }
+            usleep(delay_ms_ * 1000); // ms
+        }
+    }
+
+private:
+    int numAliveNeighbours(int x, int y)
+    {
+        int num=0;
+        if (torus_)
+        {
+            // Edges are connected (torus)
+            num += values_[(x-1+width_)%width_][(y-1+height_)%height_];
+            num += values_[(x-1+width_)%width_][y                    ];
+            num += values_[(x-1+width_)%width_][(y+1        )%height_];
+            num += values_[(x+1       )%width_][(y-1+height_)%height_];
+            num += values_[(x+1       )%width_][y                    ];
+            num += values_[(x+1       )%width_][(y+1        )%height_];
+            num += values_[x                  ][(y-1+height_)%height_];
+            num += values_[x                  ][(y+1        )%height_];
+        }
+        else
+        {
+            // Edges are not connected (no torus)
+            if (x>0)
+            {
+                if (y>0)
+                    num += values_[x-1][y-1];
+                if (y<height_-1)
+                    num += values_[x-1][y+1];
+                num += values_[x-1][y];
+            }
+            if (x<width_-1)
+            {
+                if (y>0)
+                    num += values_[x+1][y-1];
+                if (y<31)
+                    num += values_[x+1][y+1];
+                num += values_[x+1][y];
+            }
+            if (y>0)
+                num += values_[x][y-1];
+            if (y<height_-1)
+                num += values_[x][y+1];
+        }
+        return num;
+    }
+
+    void updateValues()
+    {
+        // Copy values to newValues
+        for (int x=0; x<width_; ++x)
+        {
+            for (int y=0; y<height_; ++y)
+            {
+                newValues_[x][y] = values_[x][y];
+            }
+        }
+        // update newValues based on values
+        for (int x=0; x<width_; ++x)
+        {
+            for (int y=0; y<height_; ++y)
+            {
+                int num = numAliveNeighbours(x,y);
+                if (values_[x][y])
+                {
+                    // cell is alive
+                    if (num < 2 || num > 3)
+                        newValues_[x][y] = 0;
+                }
+                else
+                {
+                    // cell is dead
+                    if (num == 3)
+                        newValues_[x][y] = 1;
+                }
+            }
+        }
+        // copy newValues to values
+        for (int x=0; x<width_; ++x)
+        {
+            for (int y=0; y<height_; ++y)
+            {
+                values_[x][y] = newValues_[x][y];
+            }
+        }
+    }
+
+    int** values_;
+    int** newValues_;
+    int delay_ms_;
+    int r_;
+    int g_;
+    int b_;
+    int width_;
+    int height_;
+    bool torus_;
+};
+
+
+void error(const char *msg)
+{
+    perror(msg);
+    exit(1);
+}
+
+class MaDemo : public ThreadedCanvasManipulator
+{
+public:
+    MaDemo(Canvas *m) : ThreadedCanvasManipulator(m) {}
+
+    uint8_t scale_col(int val, int lo, int hi)
+    {
+        if (val < lo) return 0;
+        if (val > hi) return 255;
+        return 255 * (val - lo) / (hi - lo);
+    }
+
+    void Run()
+    {
+        sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        if(sockfd < 0)
+            error("ERROR opening socket");
+
+        bzero((char *) &serv_addr, sizeof(serv_addr));
+        portno = 51717;
+        serv_addr.sin_family = AF_INET;
+        serv_addr.sin_addr.s_addr = INADDR_ANY;
+        serv_addr.sin_port = htons(portno);
+        if(bind(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
+            error("ERROR on binding");
+
+        listen(sockfd,5);
+        clilen = sizeof(cli_addr);
+        newsockfd = accept(sockfd, (struct sockaddr*) &cli_addr, &clilen);
+        if(newsockfd < 0)
+            error("ERROR on accept");
+
+        while(running() && !interrupt_received)
+        {
+            do
+            {
+            bzero(ack,1);
+	    n = read(newsockfd,ack,1);
+            if(n < 0)
+                error("ERROR reading from socket");
+            }while(ack[0] !='A');
+            //n = write(newsockfd,"A",1);
+           // if(n < 0)
+             //   error("ERROR writing to socket");
+
+            bzero(buffer,TAILLE);
+            n = read(newsockfd,buffer,TAILLE);
+            if(n < 0)
+                error("ERROR reading from socket");
+            m = 0;
+            for(x = 0; x < TAILLE; x++)
+                m += (buffer[x] == 1);
+            for(x = 0; x < LONGUEUR; x++)
+                {
+                    for(y = 0; y < HAUTEUR; y++)
+                    {
+                        /*if(m > 1000)
+                            r = 1;
+                        else if(m > 50)
+                            r = (m-50.)/950.;
+                        else
+                            r = 0;*/
+                        r = (m+500)/1000.;
+                        if(r > 1)
+                            r = 1;
+                        if(r < 0)
+                            r = 0;
+                        //canvas()->SetPixel(x, y, 1/**(buffer[x+LONGUEUR*y] != 1)*/, 64*(buffer[x+LONGUEUR*y] == 1), 64*(buffer[x+LONGUEUR*y] == 1));
+                        if(buffer[x+LONGUEUR*y] == 1)
+                            //canvas()->SetPixel(x, y, 0, 32+800*m/TAILLE*m/TAILLE, 32+800*m/TAILLE*m/TAILLE);
+                            canvas()->SetPixel(x, y, (r+.2)*15, (r+.2)*45, (r+.2)*170);
+                        else
+                            //canvas()->SetPixel(x, y, 0, 16-16*m/TAILLE, 16-16*m/TAILLE);
+                            canvas()->SetPixel(x, y, (1.2-r)*15, (1.2-r)*45, (1.2-r)*170);
+                        //printf("%d ",buffer[x+LONGUEUR*y]);
+                    }
+                }
+            n = write(newsockfd,"B",1);
+            if(n < 0)
+                error("ERROR writing to socket");
+            usleep(1000*40);
+        }
+        close(newsockfd);
+        close(sockfd);
+        usleep(1000 * 1000);
+    }
+private:
+    int sockfd, newsockfd, portno, n;
+    socklen_t clilen;
+    char buffer[TAILLE];
+    char ack[1];
+    struct sockaddr_in serv_addr, cli_addr;
+    int x,y,m;
+    double r;
+    //int c,d,h,g,b,v0,v1,v2,v3,v4;
+};
+
+static int usage(const char *progname)
+{
+    fprintf(stderr, "usage: %s <options> -D <demo-nr> [optional parameter]\n",
+            progname);
+    fprintf(stderr, "Options:\n");
+    fprintf(stderr,
+            "\t-D <demo-nr>              : Always needs to be set\n"
+            "\t-L                        : Large display, in which each chain is 'folded down'\n"
+            "\t                            in the middle in an U-arrangement to get more vertical space.\n"
+            "\t-R <rotation>             : Sets the rotation of matrix. "
+            "Allowed: 0, 90, 180, 270. Default: 0.\n"
+            "\t-t <seconds>              : Run for these number of seconds, then exit.\n");
+
+
+    rgb_matrix::PrintMatrixFlags(stderr);
+
+    fprintf(stderr, "Demos, choosen with -D\n");
+    fprintf(stderr, "\t0  - some rotating square\n"
+            "\t6  - Abelian sandpile model (-m <time-step-ms>)\n"
+            "\t7  - Conway's game of life (-m <time-step-ms>)\n"
+            "\t12 - PROGRAMME KINECT\n");
+    fprintf(stderr, "Example:\n\t%s -t 10 -D 1 runtext.ppm\n"
+            "Scrolls the runtext for 10 seconds\n", progname);
+    return 1;
+}
+
+int main(int argc, char *argv[])
+{
+    int runtime_seconds = -1;
+    int demo = -1;
+    int scroll_ms = 30;
+    int rotation = 0;
+    bool large_display = false;
+
+    const char *demo_parameter = NULL;
+    RGBMatrix::Options matrix_options;
+    rgb_matrix::RuntimeOptions runtime_opt;
+
+    // These are the defaults when no command-line flags are given.
+    matrix_options.rows = 32;
+    matrix_options.chain_length = 1;
+    matrix_options.parallel = 1;
+
+    // First things first: extract the command line flags that contain
+    // relevant matrix options.
+    if (!ParseOptionsFromFlags(&argc, &argv, &matrix_options, &runtime_opt))
+    {
+        return usage(argv[0]);
+    }
+
+    int opt;
+    while ((opt = getopt(argc, argv, "dD:t:r:P:c:p:b:m:LR:")) != -1)
+    {
+        switch (opt)
+        {
+        case 'D':
+            demo = atoi(optarg);
+            break;
+
+        case 't':
+            runtime_seconds = atoi(optarg);
+            break;
+
+        case 'm':
+            scroll_ms = atoi(optarg);
+            break;
+
+        case 'R':
+            rotation = atoi(optarg);
+            break;
+
+        case 'L':
+            if (matrix_options.chain_length == 1)
+            {
+                // If this is still default, force the 64x64 arrangement.
+                matrix_options.chain_length = 4;
+            }
+            large_display = true;
+            break;
+
+        // These used to be options we understood, but deprecated now. Accept
+        // but don't mention in usage()
+        case 'd':
+            runtime_opt.daemon = 1;
+            break;
+
+        case 'r':
+            matrix_options.rows = atoi(optarg);
+            break;
+
+        case 'P':
+            matrix_options.parallel = atoi(optarg);
+            break;
+
+        case 'c':
+            matrix_options.chain_length = atoi(optarg);
+            break;
+
+        case 'p':
+            matrix_options.pwm_bits = atoi(optarg);
+            break;
+
+        case 'b':
+            matrix_options.brightness = atoi(optarg);
+            break;
+
+        default: /* '?' */
+            return usage(argv[0]);
+        }
+    }
+
+    if (optind < argc)
+    {
+        demo_parameter = argv[optind];
+    }
+
+    if (demo < 0)
+    {
+        fprintf(stderr, TERM_ERR "Expected required option -D <demo>\n" TERM_NORM);
+        return usage(argv[0]);
+    }
+
+    if (rotation % 90 != 0)
+    {
+        fprintf(stderr, TERM_ERR "Rotation %d not allowed! "
+                "Only 0, 90, 180 and 270 are possible.\n" TERM_NORM, rotation);
+        return 1;
+    }
+
+    RGBMatrix *matrix = CreateMatrixFromOptions(matrix_options, runtime_opt);
+    if (matrix == NULL)
+        return 1;
+
+    if (large_display)
+    {
+        // Mapping the coordinates of a 32x128 display mapped to a square of 64x64.
+        // Or any other U-arrangement.
+        matrix->ApplyStaticTransformer(UArrangementTransformer(
+                                           matrix_options.parallel));
+    }
+
+    if (rotation > 0)
+    {
+        matrix->ApplyStaticTransformer(RotateTransformer(rotation));
+    }
+
+    printf("Size: %dx%d. Hardware gpio mapping: %s\n",
+           matrix->width(), matrix->height(), matrix_options.hardware_mapping);
+
+    Canvas *canvas = matrix;
+
+    // The ThreadedCanvasManipulator objects are filling
+    // the matrix continuously.
+    ThreadedCanvasManipulator *image_gen = NULL;
+    switch (demo)
+    {
+    case 0:
+        image_gen = new RotatingBlockGenerator(canvas);
+        break;
+
+    case 6:
+        image_gen = new Sandpile(canvas, scroll_ms);
+        break;
+
+    case 7:
+        image_gen = new GameLife(canvas, scroll_ms);
+        break;
+
+    case 12:
+        image_gen = new MaDemo(canvas);
+        break;
+    }
+
+    if (image_gen == NULL)
+        return usage(argv[0]);
+
+    // Set up an interrupt handler to be able to stop animations while they go
+    // on. Note, each demo tests for while (running() && !interrupt_received) {},
+    // so they exit as soon as they get a signal.
+    signal(SIGTERM, InterruptHandler);
+    signal(SIGINT, InterruptHandler);
+
+    // Image generating demo is crated. Now start the thread.
+    image_gen->Start();
+
+    // Now, the image generation runs in the background. We can do arbitrary
+    // things here in parallel. In this demo, we're essentially just
+    // waiting for one of the conditions to exit.
+    if (runtime_seconds > 0)
+    {
+        sleep(runtime_seconds);
+    }
+    else
+    {
+        // The
+        printf("Press <CTRL-C> to exit and reset LEDs\n");
+        while (!interrupt_received)
+        {
+            sleep(1); // Time doesn't really matter. The syscall will be interrupted.
+        }
+    }
+
+    // Stop image generating thread. The delete triggers
+    delete image_gen;
+    delete canvas;
+
+    printf("\%s. Exiting.\n",
+           interrupt_received ? "Received CTRL-C" : "Timeout reached");
+    return 0;
+}
