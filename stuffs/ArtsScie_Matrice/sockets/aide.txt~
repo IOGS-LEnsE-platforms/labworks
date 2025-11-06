@@ -1,7 +1,0 @@
-g++ server.c -o server
-g++ client.c -o client
-
-./server 51717
-./client laptop-olivier 51717
-
-Le nom est dans /etc/hostname
