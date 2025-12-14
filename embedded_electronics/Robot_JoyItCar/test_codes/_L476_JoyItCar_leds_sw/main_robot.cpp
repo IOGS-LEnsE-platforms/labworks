@@ -1,6 +1,5 @@
 /*  
- *  Main Header file for Robot Joy-It Car @ LEnsE
- *      Declaration of inputs/outputs
+ *  Main C++ file for Robot Joy-It Car @ LEnsE
  *
  *****************************************************************
  *  Tested with Nucleo L476RG board / Mbed OS 6.17
@@ -11,26 +10,18 @@
  *      Based on Mbed OS 6 example : mbed-os-example-blinky-baremetal
  */
  
-#ifndef __MAIN_ROBOT__
-#define __MAIN_ROBOT__	
-
-#include "mbed.h"
-#include "WS2812.h"
-#include "PixelArray.h"
-
-
-#define     STRIP_SIZE      2
-
+#include "main_robot.h"
+ 
 // Inputs / Outputs
-extern 			DigitalOut  	led1;
-extern 			DigitalOut  	led2;
+DigitalOut  	led1(PC_7);
+DigitalOut  	led2(PB_13);
 
-extern 			InterruptIn		sw1;
-extern 			InterruptIn		sw2;
-extern 			InterruptIn		userB;
+InterruptIn		sw1(PA_11);
+InterruptIn		sw2(PA_12);
+InterruptIn		userB(PC_13);
 
 // HeadLights
-extern 	WS2812  my_strip1; 	// Head Light 1
+WS2812  my_strip1(PC_0, STRIP_SIZE, WS2812_STD);	// Head Light 1
 /*
 WS2812  my_strip2(PA_10, STRIP_SIZE, WS2812_STD); // Head Light 2
 WS2812  my_strip3(PC_5, STRIP_SIZE, WS2812_STD); // Head Light 3
@@ -42,11 +33,8 @@ PixelArray my_leds4(STRIP_SIZE, WS2812_STD);
 */
 
 // Motors
-extern 			PwmOut 				motor_R1;
-extern 			PwmOut 				motor_R2;
-extern 			PwmOut 				motor_L1;
-extern 			PwmOut 				motor_L2;
-extern 			DigitalOut		motor_en;	
-
-
-#endif
+PwmOut 				motor_R1(PA_0);
+PwmOut 				motor_R2(PA_1);
+PwmOut 				motor_L1(PB_4);
+PwmOut 				motor_L2(PA_8);
+DigitalOut		motor_en(PA_9);	
