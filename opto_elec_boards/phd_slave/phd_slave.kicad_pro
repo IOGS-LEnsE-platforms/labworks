@@ -474,7 +474,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "main_board.kicad_pro",
+    "filename": "phd_slave.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -567,7 +567,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "carte_alim_signauxv2.net",
-      "plot": "main_board_gerber/",
+      "plot": "phd_slave_gerber/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
