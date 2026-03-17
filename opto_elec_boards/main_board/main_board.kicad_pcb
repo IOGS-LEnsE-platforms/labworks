@@ -8790,7 +8790,7 @@
 		(descr "Through hole angled socket strip, 2x10, 2.54mm pitch, 8.51mm socket length, double cols (from Kicad 4.0.7), script generated")
 		(tags "Through hole angled socket strip THT 2x10 2.54mm double row")
 		(property "Reference" "J10"
-			(at -5.65 -2.77 0)
+			(at -8.29 -3.47 90)
 			(layer "F.SilkS")
 			(uuid "a84690a7-0597-467e-a176-3706052a41fb")
 			(effects
@@ -15896,6 +15896,18 @@
 			)
 		)
 	)
+	(gr_text "IN1"
+		(at 70.25 81.75 0)
+		(layer "F.SilkS")
+		(uuid "302f499f-4a6f-4bae-aa8c-6639a48f211a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.2)
+				(bold yes)
+			)
+		)
+	)
 	(gr_text "GND"
 		(at 71.25 42.75 90)
 		(layer "F.SilkS")
@@ -16048,6 +16060,18 @@
 			(font
 				(size 0.7 0.7)
 				(thickness 0.1)
+			)
+		)
+	)
+	(gr_text "+15V"
+		(at 70.5 58.75 0)
+		(layer "F.SilkS")
+		(uuid "b5047436-bcaa-430b-86d8-97092d6f9635")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.2)
+				(bold yes)
 			)
 		)
 	)
