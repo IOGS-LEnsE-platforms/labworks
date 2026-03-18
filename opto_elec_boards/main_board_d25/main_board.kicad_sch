@@ -2757,6 +2757,16 @@
 	)
 	(wire
 		(pts
+			(xy 172.72 74.93) (xy 172.72 77.47)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "05263ca1-7bf4-451e-810f-45b11779602c")
+	)
+	(wire
+		(pts
 			(xy 90.17 81.28) (xy 90.17 78.74)
 		)
 		(stroke
@@ -3004,6 +3014,16 @@
 			(type default)
 		)
 		(uuid "40dd50cd-0218-496f-bc6d-69663b52db2f")
+	)
+	(wire
+		(pts
+			(xy 171.45 66.04) (xy 172.72 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "41a179fa-30bc-4a55-b71d-b2946aee95ab")
 	)
 	(wire
 		(pts
@@ -3757,6 +3777,16 @@
 	)
 	(wire
 		(pts
+			(xy 176.53 71.12) (xy 177.8 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ec8317ee-e00f-4522-b3b1-211c75e273d8")
+	)
+	(wire
+		(pts
 			(xy 45.72 95.25) (xy 45.72 92.71)
 		)
 		(stroke
@@ -3867,6 +3897,16 @@
 	)
 	(wire
 		(pts
+			(xy 172.72 66.04) (xy 172.72 67.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f998a7df-980a-4038-8c3d-3c953c4f5e1d")
+	)
+	(wire
+		(pts
 			(xy 194.31 139.7) (xy 196.85 139.7)
 		)
 		(stroke
@@ -3947,6 +3987,26 @@
 		(uuid "1a951f66-68ca-4656-83a3-db89d47e4482")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 222.25 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "+15V"
+		(shape input)
+		(at 171.45 66.04 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "21bac0dd-7bef-458b-a33b-00f3bb0aca40")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 171.45 66.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4415,6 +4475,26 @@
 			)
 		)
 	)
+	(global_label "RVAR_15V"
+		(shape input)
+		(at 222.25 73.66 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "a240b2c8-56e1-468a-90ea-1405c61f92a8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 222.25 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "OUT2"
 		(shape input)
 		(at 38.1 107.95 180)
@@ -4567,6 +4647,26 @@
 		(uuid "c666b28c-f90d-40f1-8d32-b98f57538737")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 101.6 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "RVAR_15V"
+		(shape input)
+		(at 177.8 71.12 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e134462d-6210-47bd-ad72-0ff657da8dc6")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 177.8 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5487,71 +5587,6 @@
 			(project ""
 				(path "/57df33c0-6f05-4aba-b5b1-deb15b1b9db6"
 					(reference "#PWR0109")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 222.25 73.66 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "00000000-0000-0000-0000-0000604c2ef8")
-		(property "Reference" "#PWR0110"
-			(at 215.9 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 218.9988 73.787 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 222.25 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 222.25 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 222.25 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "45acb54d-db73-4114-b19f-714239f08bc0")
-		)
-		(instances
-			(project ""
-				(path "/57df33c0-6f05-4aba-b5b1-deb15b1b9db6"
-					(reference "#PWR0110")
 					(unit 1)
 				)
 			)
@@ -7522,6 +7557,71 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 172.72 77.47 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "92ae705a-233b-48bf-9616-5fb558ffd352")
+		(property "Reference" "#PWR016"
+			(at 172.72 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 172.847 80.7212 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 172.72 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 172.72 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 172.72 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f72d1cad-9589-40bf-a893-f5027c2da68e")
+		)
+		(instances
+			(project "main_board"
+				(path "/57df33c0-6f05-4aba-b5b1-deb15b1b9db6"
+					(reference "#PWR016")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 232.41 90.17 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7718,6 +7818,79 @@
 			(project "main_board"
 				(path "/57df33c0-6f05-4aba-b5b1-deb15b1b9db6"
 					(reference "#PWR013")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Potentiometer")
+		(at 172.72 71.12 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b6386136-2913-4c29-ba44-880202f02b36")
+		(property "Reference" "RV3"
+			(at 170.18 69.8499 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "R_Potentiometer"
+			(at 170.18 72.3899 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
+			(at 172.72 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 172.72 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Potentiometer"
+			(at 172.72 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7062b4f9-de72-4a44-b8d7-97300fd0502e")
+		)
+		(pin "3"
+			(uuid "5209bf63-e52b-47de-92ff-938672faf0c2")
+		)
+		(pin "2"
+			(uuid "060c9db7-dee7-4da9-94f0-f8c7bf676cdc")
+		)
+		(instances
+			(project "main_board"
+				(path "/57df33c0-6f05-4aba-b5b1-deb15b1b9db6"
+					(reference "RV3")
 					(unit 1)
 				)
 			)
