@@ -109,6 +109,7 @@
 		(property "Reference" "M4a"
 			(at -5.25 0 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "747d7913-b3cb-4f21-91cf-d6e94e1fae39")
 			(effects
 				(font
@@ -5466,6 +5467,7 @@
 		(property "Reference" "M4c"
 			(at 0 5.75 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "f1ccbc87-cdb2-4867-8788-7e1ff4653c5d")
 			(effects
 				(font
@@ -5911,6 +5913,7 @@
 		(property "Reference" "M4b"
 			(at 0 -5.25 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "ad5e48b7-61d0-411f-aa5c-c3f47be42fc6")
 			(effects
 				(font
@@ -6236,17 +6239,6 @@
 				(size 1 1)
 				(thickness 0.2)
 				(bold yes)
-			)
-		)
-	)
-	(gr_text "R_phd = 100 kO"
-		(at 130.429 54.737 90)
-		(layer "F.SilkS")
-		(uuid "b4d7a494-bd7f-47d0-b210-55f93bdf3eb2")
-		(effects
-			(font
-				(size 1 1)
-				(thickness 0.125)
 			)
 		)
 	)
