@@ -2648,6 +2648,12 @@
 		(uuid "b71d9c39-8ceb-40d6-b72e-a6ce0d0f6b25")
 	)
 	(junction
+		(at 82.55 97.79)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1035356c-ff66-4e80-a5e4-d949a756de2b")
+	)
+	(junction
 		(at 102.87 118.11)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2658,6 +2664,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "293a3364-d244-4c71-bbb8-c78efd746577")
+	)
+	(junction
+		(at 111.76 90.17)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2ded509e-f5de-48e1-bdde-297cf41714a7")
 	)
 	(junction
 		(at 66.04 33.02)
@@ -2682,6 +2694,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "400c85c5-a514-431c-8f1e-a1b872091b0e")
+	)
+	(junction
+		(at 156.21 97.79)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "518a508a-dfc2-4ee1-8e05-c0c02769c061")
 	)
 	(junction
 		(at 74.93 101.6)
@@ -2905,7 +2923,7 @@
 	)
 	(wire
 		(pts
-			(xy 104.14 90.17) (xy 102.87 90.17)
+			(xy 102.87 90.17) (xy 111.76 90.17)
 		)
 		(stroke
 			(width 0)
@@ -2922,16 +2940,6 @@
 			(type default)
 		)
 		(uuid "0e07a667-3dc7-4375-938d-5bfd43f79506")
-	)
-	(wire
-		(pts
-			(xy 111.76 90.17) (xy 114.3 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "13bfdfe2-b61c-40e8-b44b-d82bfa8f6983")
 	)
 	(wire
 		(pts
@@ -3165,6 +3173,16 @@
 	)
 	(wire
 		(pts
+			(xy 118.11 95.25) (xy 111.76 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "31be57e5-1e8d-4163-a10b-7c3f3b7a9e05")
+	)
+	(wire
+		(pts
 			(xy 66.04 44.45) (xy 66.04 33.02)
 		)
 		(stroke
@@ -3205,6 +3223,16 @@
 	)
 	(wire
 		(pts
+			(xy 138.43 97.79) (xy 156.21 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "375e7940-364d-404e-a13c-84402d871cd1")
+	)
+	(wire
+		(pts
 			(xy 127 86.36) (xy 130.81 86.36)
 		)
 		(stroke
@@ -3232,6 +3260,16 @@
 			(type default)
 		)
 		(uuid "3ef5b1aa-3ffe-4903-8b0e-e8e7911f06c4")
+	)
+	(wire
+		(pts
+			(xy 82.55 97.79) (xy 82.55 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "40ff6d0e-078f-4def-9202-a140963f77b6")
 	)
 	(wire
 		(pts
@@ -3272,6 +3310,16 @@
 			(type default)
 		)
 		(uuid "48d30dee-e470-404b-93f0-da16a3b78a8f")
+	)
+	(wire
+		(pts
+			(xy 130.81 97.79) (xy 82.55 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4a1b8e97-d2b7-4742-a6d7-4b3ccb3aed0d")
 	)
 	(wire
 		(pts
@@ -3635,7 +3683,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 115.57) (xy 156.21 92.71)
+			(xy 156.21 115.57) (xy 156.21 97.79)
 		)
 		(stroke
 			(width 0)
@@ -3712,6 +3760,16 @@
 			(type default)
 		)
 		(uuid "8260d470-c744-415f-a2a7-0ef5b9559339")
+	)
+	(wire
+		(pts
+			(xy 118.11 93.98) (xy 118.11 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "847a2297-65ab-4aca-becd-429c99d0c8ec")
 	)
 	(wire
 		(pts
@@ -3865,6 +3923,16 @@
 	)
 	(wire
 		(pts
+			(xy 111.76 90.17) (xy 114.3 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "99673415-4f7c-4779-aeb4-3f24edcc6135")
+	)
+	(wire
+		(pts
 			(xy 82.55 153.67) (xy 82.55 118.11)
 		)
 		(stroke
@@ -3925,7 +3993,7 @@
 	)
 	(wire
 		(pts
-			(xy 82.55 101.6) (xy 82.55 82.55)
+			(xy 82.55 82.55) (xy 82.55 97.79)
 		)
 		(stroke
 			(width 0)
@@ -4085,6 +4153,16 @@
 	)
 	(wire
 		(pts
+			(xy 156.21 97.79) (xy 156.21 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c2bc63e0-4139-4178-a43b-6015a252b28c")
+	)
+	(wire
+		(pts
 			(xy 85.09 26.67) (xy 86.36 26.67)
 		)
 		(stroke
@@ -4182,6 +4260,16 @@
 			(type default)
 		)
 		(uuid "d7d32de2-fe61-4299-ae80-c644524cd416")
+	)
+	(wire
+		(pts
+			(xy 111.76 95.25) (xy 111.76 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d8f0f07c-96ec-40e8-9fee-b0a625e1128e")
 	)
 	(wire
 		(pts
@@ -5254,7 +5342,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 112.522 43.18 90)
 			(effects
 				(font
@@ -5454,7 +5542,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 84.582 43.18 90)
 			(effects
 				(font
@@ -5648,7 +5736,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 166.37 94.488 90)
 			(effects
 				(font
@@ -5718,7 +5806,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
 			(at 125.73 146.05 0)
 			(effects
 				(font
@@ -5851,7 +5939,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 97.79 84.328 90)
 			(effects
 				(font
@@ -6052,7 +6140,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LEnsE_devices:C_R_Multi"
 			(at 119.38 123.4948 0)
 			(effects
 				(font
@@ -6120,7 +6208,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LEnsE_devices:C_R_Multi"
 			(at 101.6 152.7048 0)
 			(effects
 				(font
@@ -6188,7 +6276,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm_Socket_LongPads"
 			(at 163.83 81.28 0)
 			(effects
 				(font
@@ -6291,7 +6379,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 134.62 117.348 90)
 			(effects
 				(font
@@ -6427,7 +6515,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm_Socket_LongPads"
 			(at 110.49 77.47 0)
 			(effects
 				(font
@@ -6455,46 +6543,46 @@
 			)
 		)
 		(pin "3"
-			(uuid "6e359f92-963a-47ea-b13a-7323fa25373c")
+			(uuid "6e359f92-963a-47ea-b13a-7323fa25373d")
 		)
 		(pin "5"
-			(uuid "38d47794-7755-446e-b496-49c03b2fe4ca")
+			(uuid "38d47794-7755-446e-b496-49c03b2fe4cb")
 		)
 		(pin "6"
-			(uuid "4c1831b4-abdb-45be-88b8-245dccb021aa")
+			(uuid "4c1831b4-abdb-45be-88b8-245dccb021ab")
 		)
 		(pin "8"
-			(uuid "2c7a5fba-e11b-4b07-b8ba-34002ade5550")
+			(uuid "2c7a5fba-e11b-4b07-b8ba-34002ade5551")
 		)
 		(pin "1"
-			(uuid "fd63dcd3-a8c1-4e29-a2e3-f2ed356256fd")
+			(uuid "fd63dcd3-a8c1-4e29-a2e3-f2ed356256fe")
 		)
 		(pin "10"
-			(uuid "970f890f-eee2-4bc7-9bfd-998fc715832c")
+			(uuid "970f890f-eee2-4bc7-9bfd-998fc715832d")
 		)
 		(pin "11"
-			(uuid "20a2722f-6c32-4ef5-b57b-f3051dbea64c")
+			(uuid "20a2722f-6c32-4ef5-b57b-f3051dbea64d")
 		)
 		(pin "7"
-			(uuid "0368135b-476b-44da-abce-6b43f880863f")
+			(uuid "0368135b-476b-44da-abce-6b43f8808640")
 		)
 		(pin "13"
-			(uuid "3cee6828-e6e8-4251-93bf-465fe871ef61")
+			(uuid "3cee6828-e6e8-4251-93bf-465fe871ef62")
 		)
 		(pin "2"
-			(uuid "4e74a953-fe2e-4ce8-944c-8636ca252cbe")
+			(uuid "4e74a953-fe2e-4ce8-944c-8636ca252cbf")
 		)
 		(pin "9"
-			(uuid "2ed42514-2709-47ef-bdb8-6415b9b6032a")
+			(uuid "2ed42514-2709-47ef-bdb8-6415b9b6032b")
 		)
 		(pin "12"
-			(uuid "e73a4e10-20f1-4b7f-aa90-fb6714a7e171")
+			(uuid "e73a4e10-20f1-4b7f-aa90-fb6714a7e172")
 		)
 		(pin "14"
-			(uuid "fe003f05-05c6-44bd-affc-e03c53e3bf97")
+			(uuid "fe003f05-05c6-44bd-affc-e03c53e3bf98")
 		)
 		(pin "4"
-			(uuid "aeecd116-350e-4db7-8b7f-abe8c24af07c")
+			(uuid "aeecd116-350e-4db7-8b7f-abe8c24af07d")
 		)
 		(instances
 			(project ""
@@ -6530,7 +6618,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 109.22 164.338 90)
 			(effects
 				(font
@@ -6598,7 +6686,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm_Socket_LongPads"
 			(at 172.72 31.75 0)
 			(effects
 				(font
@@ -6701,7 +6789,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 134.62 88.138 90)
 			(effects
 				(font
@@ -6888,7 +6976,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "12k"
 			(at 52.07 101.854 90)
 			(effects
 				(font
@@ -6896,7 +6984,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 52.07 105.918 90)
 			(effects
 				(font
@@ -7106,7 +7194,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm_Socket_LongPads"
 			(at 191.77 78.74 0)
 			(effects
 				(font
@@ -7134,46 +7222,46 @@
 			)
 		)
 		(pin "3"
-			(uuid "6e359f92-963a-47ea-b13a-7323fa25373c")
+			(uuid "6e359f92-963a-47ea-b13a-7323fa25373e")
 		)
 		(pin "5"
-			(uuid "38d47794-7755-446e-b496-49c03b2fe4ca")
+			(uuid "38d47794-7755-446e-b496-49c03b2fe4cc")
 		)
 		(pin "6"
-			(uuid "4c1831b4-abdb-45be-88b8-245dccb021aa")
+			(uuid "4c1831b4-abdb-45be-88b8-245dccb021ac")
 		)
 		(pin "8"
-			(uuid "2c7a5fba-e11b-4b07-b8ba-34002ade5550")
+			(uuid "2c7a5fba-e11b-4b07-b8ba-34002ade5552")
 		)
 		(pin "1"
-			(uuid "fd63dcd3-a8c1-4e29-a2e3-f2ed356256fd")
+			(uuid "fd63dcd3-a8c1-4e29-a2e3-f2ed356256ff")
 		)
 		(pin "10"
-			(uuid "970f890f-eee2-4bc7-9bfd-998fc715832c")
+			(uuid "970f890f-eee2-4bc7-9bfd-998fc715832e")
 		)
 		(pin "11"
-			(uuid "20a2722f-6c32-4ef5-b57b-f3051dbea64c")
+			(uuid "20a2722f-6c32-4ef5-b57b-f3051dbea64e")
 		)
 		(pin "7"
-			(uuid "0368135b-476b-44da-abce-6b43f880863f")
+			(uuid "0368135b-476b-44da-abce-6b43f8808641")
 		)
 		(pin "13"
-			(uuid "3cee6828-e6e8-4251-93bf-465fe871ef61")
+			(uuid "3cee6828-e6e8-4251-93bf-465fe871ef63")
 		)
 		(pin "2"
-			(uuid "4e74a953-fe2e-4ce8-944c-8636ca252cbe")
+			(uuid "4e74a953-fe2e-4ce8-944c-8636ca252cc0")
 		)
 		(pin "9"
-			(uuid "2ed42514-2709-47ef-bdb8-6415b9b6032a")
+			(uuid "2ed42514-2709-47ef-bdb8-6415b9b6032c")
 		)
 		(pin "12"
-			(uuid "e73a4e10-20f1-4b7f-aa90-fb6714a7e171")
+			(uuid "e73a4e10-20f1-4b7f-aa90-fb6714a7e173")
 		)
 		(pin "14"
-			(uuid "fe003f05-05c6-44bd-affc-e03c53e3bf97")
+			(uuid "fe003f05-05c6-44bd-affc-e03c53e3bf99")
 		)
 		(pin "4"
-			(uuid "aeecd116-350e-4db7-8b7f-abe8c24af07c")
+			(uuid "aeecd116-350e-4db7-8b7f-abe8c24af07e")
 		)
 		(instances
 			(project ""
@@ -7276,7 +7364,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 200.152 45.72 90)
 			(effects
 				(font
@@ -7410,7 +7498,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
 			(at 124.46 74.93 0)
 			(effects
 				(font
@@ -7477,7 +7565,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 87.63 119.888 90)
 			(effects
 				(font
@@ -7611,7 +7699,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm_Socket_LongPads"
 			(at 27.94 46.99 0)
 			(effects
 				(font
@@ -7756,73 +7844,6 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 107.95 90.17 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "7836b63d-a353-4860-921f-1a6f7d032073")
-		(property "Reference" "R7"
-			(at 107.95 92.456 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "R"
-			(at 107.95 87.884 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 107.95 91.948 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 107.95 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 107.95 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "79df9fcc-9905-4752-aae3-8048de57f12c")
-		)
-		(pin "2"
-			(uuid "099e51ae-8c6d-48ff-ae5d-b3f036260efa")
-		)
-		(instances
-			(project ""
-				(path "/57df33c0-6f05-4aba-b5b1-deb15b1b9db6"
-					(reference "R7")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
 		(at 52.07 99.06 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7831,14 +7852,14 @@
 		(dnp no)
 		(uuid "79d9a693-0f36-4f1d-a51d-48b75dec68b8")
 		(property "Reference" "R15"
-			(at 52.07 101.346 90)
+			(at 52.07 99.06 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "12k"
 			(at 52.07 96.774 90)
 			(effects
 				(font
@@ -7846,7 +7867,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 52.07 100.838 90)
 			(effects
 				(font
@@ -7981,7 +8002,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm_Socket_LongPads"
 			(at 36.83 46.99 0)
 			(effects
 				(font
@@ -8009,46 +8030,46 @@
 			)
 		)
 		(pin "3"
-			(uuid "6e359f92-963a-47ea-b13a-7323fa25373c")
+			(uuid "6e359f92-963a-47ea-b13a-7323fa25373f")
 		)
 		(pin "5"
-			(uuid "38d47794-7755-446e-b496-49c03b2fe4ca")
+			(uuid "38d47794-7755-446e-b496-49c03b2fe4cd")
 		)
 		(pin "6"
-			(uuid "4c1831b4-abdb-45be-88b8-245dccb021aa")
+			(uuid "4c1831b4-abdb-45be-88b8-245dccb021ad")
 		)
 		(pin "8"
-			(uuid "2c7a5fba-e11b-4b07-b8ba-34002ade5550")
+			(uuid "2c7a5fba-e11b-4b07-b8ba-34002ade5553")
 		)
 		(pin "1"
-			(uuid "fd63dcd3-a8c1-4e29-a2e3-f2ed356256fd")
+			(uuid "fd63dcd3-a8c1-4e29-a2e3-f2ed35625700")
 		)
 		(pin "10"
-			(uuid "970f890f-eee2-4bc7-9bfd-998fc715832c")
+			(uuid "970f890f-eee2-4bc7-9bfd-998fc715832f")
 		)
 		(pin "11"
-			(uuid "20a2722f-6c32-4ef5-b57b-f3051dbea64c")
+			(uuid "20a2722f-6c32-4ef5-b57b-f3051dbea64f")
 		)
 		(pin "7"
-			(uuid "0368135b-476b-44da-abce-6b43f880863f")
+			(uuid "0368135b-476b-44da-abce-6b43f8808642")
 		)
 		(pin "13"
-			(uuid "3cee6828-e6e8-4251-93bf-465fe871ef61")
+			(uuid "3cee6828-e6e8-4251-93bf-465fe871ef64")
 		)
 		(pin "2"
-			(uuid "4e74a953-fe2e-4ce8-944c-8636ca252cbe")
+			(uuid "4e74a953-fe2e-4ce8-944c-8636ca252cc1")
 		)
 		(pin "9"
-			(uuid "2ed42514-2709-47ef-bdb8-6415b9b6032a")
+			(uuid "2ed42514-2709-47ef-bdb8-6415b9b6032d")
 		)
 		(pin "12"
-			(uuid "e73a4e10-20f1-4b7f-aa90-fb6714a7e171")
+			(uuid "e73a4e10-20f1-4b7f-aa90-fb6714a7e174")
 		)
 		(pin "14"
-			(uuid "fe003f05-05c6-44bd-affc-e03c53e3bf97")
+			(uuid "fe003f05-05c6-44bd-affc-e03c53e3bf9a")
 		)
 		(pin "4"
-			(uuid "aeecd116-350e-4db7-8b7f-abe8c24af07c")
+			(uuid "aeecd116-350e-4db7-8b7f-abe8c24af07f")
 		)
 		(instances
 			(project ""
@@ -8256,7 +8277,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 179.07 85.598 90)
 			(effects
 				(font
@@ -8494,6 +8515,73 @@
 	)
 	(symbol
 		(lib_id "Device:R")
+		(at 134.62 97.79 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9e453108-3b44-4467-95a6-ace3ad37cb53")
+		(property "Reference" "R23"
+			(at 134.62 100.076 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "R"
+			(at 134.62 95.504 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+			(at 134.62 99.568 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 134.62 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 134.62 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7b246dd6-3fc3-46c0-b470-d71df7dc480e")
+		)
+		(pin "2"
+			(uuid "59a0ab3a-858c-4ff1-9506-e28d38f44217")
+		)
+		(instances
+			(project "asst_slave_d25"
+				(path "/57df33c0-6f05-4aba-b5b1-deb15b1b9db6"
+					(reference "R23")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
 		(at 49.53 52.07 180)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8586,7 +8674,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 195.58 90.678 90)
 			(effects
 				(font
@@ -8717,7 +8805,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 68.58 110.998 90)
 			(effects
 				(font
@@ -8850,7 +8938,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Potentiometer_THT:Potentiometer_Bourns_3386P_Vertical"
 			(at 97.79 118.11 0)
 			(effects
 				(font
@@ -8986,7 +9074,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Potentiometer_THT:Potentiometer_Bourns_3386P_Vertical"
 			(at 119.38 162.56 0)
 			(effects
 				(font
@@ -9056,7 +9144,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 134.62 152.908 90)
 			(effects
 				(font
@@ -9188,7 +9276,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm_Socket_LongPads"
 			(at 64.77 99.06 0)
 			(effects
 				(font
@@ -9216,46 +9304,46 @@
 			)
 		)
 		(pin "3"
-			(uuid "6bb2ab42-b3b7-4af9-9570-bf7845dd892c")
+			(uuid "6bb2ab42-b3b7-4af9-9570-bf7845dd892d")
 		)
 		(pin "1"
-			(uuid "351aa34c-2b0a-4bf6-8386-d99ec0093d72")
+			(uuid "351aa34c-2b0a-4bf6-8386-d99ec0093d73")
 		)
 		(pin "12"
-			(uuid "8d13b9d7-4c15-49b5-9410-fe7e2ba0f1bd")
+			(uuid "8d13b9d7-4c15-49b5-9410-fe7e2ba0f1be")
 		)
 		(pin "5"
-			(uuid "79b3692a-afb4-4e68-b1e5-e0992c274c54")
+			(uuid "79b3692a-afb4-4e68-b1e5-e0992c274c55")
 		)
 		(pin "8"
-			(uuid "44024feb-9ce5-4459-99c2-b97d0429310c")
+			(uuid "44024feb-9ce5-4459-99c2-b97d0429310d")
 		)
 		(pin "14"
-			(uuid "b84f435d-e5d7-41e7-b01b-a6f2531be255")
+			(uuid "b84f435d-e5d7-41e7-b01b-a6f2531be256")
 		)
 		(pin "13"
-			(uuid "7b975617-6885-470d-a6d2-d0df66d773ab")
+			(uuid "7b975617-6885-470d-a6d2-d0df66d773ac")
 		)
 		(pin "11"
-			(uuid "5963a3a6-4633-44ac-8ada-bc715c70f9a9")
+			(uuid "5963a3a6-4633-44ac-8ada-bc715c70f9aa")
 		)
 		(pin "7"
-			(uuid "ccccfde2-bc95-4607-b86a-50f6ab73bc0b")
+			(uuid "ccccfde2-bc95-4607-b86a-50f6ab73bc0c")
 		)
 		(pin "6"
-			(uuid "76bf403e-0bd5-496e-8f35-fba5a5c3b24d")
+			(uuid "76bf403e-0bd5-496e-8f35-fba5a5c3b24e")
 		)
 		(pin "10"
-			(uuid "dacabfa8-5329-42e7-968d-ad1dd5f12add")
+			(uuid "dacabfa8-5329-42e7-968d-ad1dd5f12ade")
 		)
 		(pin "2"
-			(uuid "efc295cd-3d62-4c02-b942-d8f590e89c67")
+			(uuid "efc295cd-3d62-4c02-b942-d8f590e89c68")
 		)
 		(pin "9"
-			(uuid "c6ac86c0-d9aa-4dbd-9aa1-9e057fe08ef0")
+			(uuid "c6ac86c0-d9aa-4dbd-9aa1-9e057fe08ef1")
 		)
 		(pin "4"
-			(uuid "3ad108b9-449e-46de-9c81-2c1826e040f1")
+			(uuid "3ad108b9-449e-46de-9c81-2c1826e040f2")
 		)
 		(instances
 			(project ""
@@ -9348,7 +9436,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "12k"
 			(at 52.07 89.154 90)
 			(effects
 				(font
@@ -9356,7 +9444,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 52.07 93.218 90)
 			(effects
 				(font
@@ -9426,7 +9514,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
 			(at 124.46 110.49 0)
 			(effects
 				(font
@@ -9494,7 +9582,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm_Socket_LongPads"
 			(at 111.76 148.59 0)
 			(effects
 				(font
@@ -9522,46 +9610,46 @@
 			)
 		)
 		(pin "3"
-			(uuid "6bb2ab42-b3b7-4af9-9570-bf7845dd892c")
+			(uuid "6bb2ab42-b3b7-4af9-9570-bf7845dd892e")
 		)
 		(pin "1"
-			(uuid "351aa34c-2b0a-4bf6-8386-d99ec0093d72")
+			(uuid "351aa34c-2b0a-4bf6-8386-d99ec0093d74")
 		)
 		(pin "12"
-			(uuid "8d13b9d7-4c15-49b5-9410-fe7e2ba0f1bd")
+			(uuid "8d13b9d7-4c15-49b5-9410-fe7e2ba0f1bf")
 		)
 		(pin "5"
-			(uuid "79b3692a-afb4-4e68-b1e5-e0992c274c54")
+			(uuid "79b3692a-afb4-4e68-b1e5-e0992c274c56")
 		)
 		(pin "8"
-			(uuid "44024feb-9ce5-4459-99c2-b97d0429310c")
+			(uuid "44024feb-9ce5-4459-99c2-b97d0429310e")
 		)
 		(pin "14"
-			(uuid "b84f435d-e5d7-41e7-b01b-a6f2531be255")
+			(uuid "b84f435d-e5d7-41e7-b01b-a6f2531be257")
 		)
 		(pin "13"
-			(uuid "7b975617-6885-470d-a6d2-d0df66d773ab")
+			(uuid "7b975617-6885-470d-a6d2-d0df66d773ad")
 		)
 		(pin "11"
-			(uuid "5963a3a6-4633-44ac-8ada-bc715c70f9a9")
+			(uuid "5963a3a6-4633-44ac-8ada-bc715c70f9ab")
 		)
 		(pin "7"
-			(uuid "ccccfde2-bc95-4607-b86a-50f6ab73bc0b")
+			(uuid "ccccfde2-bc95-4607-b86a-50f6ab73bc0d")
 		)
 		(pin "6"
-			(uuid "76bf403e-0bd5-496e-8f35-fba5a5c3b24d")
+			(uuid "76bf403e-0bd5-496e-8f35-fba5a5c3b24f")
 		)
 		(pin "10"
-			(uuid "dacabfa8-5329-42e7-968d-ad1dd5f12add")
+			(uuid "dacabfa8-5329-42e7-968d-ad1dd5f12adf")
 		)
 		(pin "2"
-			(uuid "efc295cd-3d62-4c02-b942-d8f590e89c67")
+			(uuid "efc295cd-3d62-4c02-b942-d8f590e89c69")
 		)
 		(pin "9"
-			(uuid "c6ac86c0-d9aa-4dbd-9aa1-9e057fe08ef0")
+			(uuid "c6ac86c0-d9aa-4dbd-9aa1-9e057fe08ef2")
 		)
 		(pin "4"
-			(uuid "3ad108b9-449e-46de-9c81-2c1826e040f1")
+			(uuid "3ad108b9-449e-46de-9c81-2c1826e040f3")
 		)
 		(instances
 			(project ""
@@ -9598,7 +9686,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Potentiometer_THT:Potentiometer_Bourns_3386P_Vertical"
 			(at 118.11 90.17 0)
 			(effects
 				(font
@@ -9660,7 +9748,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "1k"
 			(at 51.054 114.3 90)
 			(effects
 				(font
@@ -9668,7 +9756,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
 			(at 55.118 114.3 90)
 			(effects
 				(font
@@ -9736,7 +9824,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm_Socket_LongPads"
 			(at 110.49 113.03 0)
 			(effects
 				(font
@@ -9764,46 +9852,46 @@
 			)
 		)
 		(pin "3"
-			(uuid "6bb2ab42-b3b7-4af9-9570-bf7845dd892c")
+			(uuid "6bb2ab42-b3b7-4af9-9570-bf7845dd892f")
 		)
 		(pin "1"
-			(uuid "351aa34c-2b0a-4bf6-8386-d99ec0093d72")
+			(uuid "351aa34c-2b0a-4bf6-8386-d99ec0093d75")
 		)
 		(pin "12"
-			(uuid "8d13b9d7-4c15-49b5-9410-fe7e2ba0f1bd")
+			(uuid "8d13b9d7-4c15-49b5-9410-fe7e2ba0f1c0")
 		)
 		(pin "5"
-			(uuid "79b3692a-afb4-4e68-b1e5-e0992c274c54")
+			(uuid "79b3692a-afb4-4e68-b1e5-e0992c274c57")
 		)
 		(pin "8"
-			(uuid "44024feb-9ce5-4459-99c2-b97d0429310c")
+			(uuid "44024feb-9ce5-4459-99c2-b97d0429310f")
 		)
 		(pin "14"
-			(uuid "b84f435d-e5d7-41e7-b01b-a6f2531be255")
+			(uuid "b84f435d-e5d7-41e7-b01b-a6f2531be258")
 		)
 		(pin "13"
-			(uuid "7b975617-6885-470d-a6d2-d0df66d773ab")
+			(uuid "7b975617-6885-470d-a6d2-d0df66d773ae")
 		)
 		(pin "11"
-			(uuid "5963a3a6-4633-44ac-8ada-bc715c70f9a9")
+			(uuid "5963a3a6-4633-44ac-8ada-bc715c70f9ac")
 		)
 		(pin "7"
-			(uuid "ccccfde2-bc95-4607-b86a-50f6ab73bc0b")
+			(uuid "ccccfde2-bc95-4607-b86a-50f6ab73bc0e")
 		)
 		(pin "6"
-			(uuid "76bf403e-0bd5-496e-8f35-fba5a5c3b24d")
+			(uuid "76bf403e-0bd5-496e-8f35-fba5a5c3b250")
 		)
 		(pin "10"
-			(uuid "dacabfa8-5329-42e7-968d-ad1dd5f12add")
+			(uuid "dacabfa8-5329-42e7-968d-ad1dd5f12ae0")
 		)
 		(pin "2"
-			(uuid "efc295cd-3d62-4c02-b942-d8f590e89c67")
+			(uuid "efc295cd-3d62-4c02-b942-d8f590e89c6a")
 		)
 		(pin "9"
-			(uuid "c6ac86c0-d9aa-4dbd-9aa1-9e057fe08ef0")
+			(uuid "c6ac86c0-d9aa-4dbd-9aa1-9e057fe08ef3")
 		)
 		(pin "4"
-			(uuid "3ad108b9-449e-46de-9c81-2c1826e040f1")
+			(uuid "3ad108b9-449e-46de-9c81-2c1826e040f4")
 		)
 		(instances
 			(project ""
@@ -9908,7 +9996,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
 			(at 41.91 111.76 0)
 			(effects
 				(font
