@@ -567,7 +567,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "carte_alim_signauxv2.net",
-      "plot": "phd_slave_gerber/",
+      "plot": "asst_slave_gerber",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
